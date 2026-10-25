@@ -261,6 +261,16 @@ document.getElementById('zoom-in').addEventListener('click',()=>{scale=Math.min(
 document.getElementById('zoom-out').addEventListener('click',()=>{scale=Math.max(.5,scale-.25);updateScale();positionCard()});
 document.getElementById('zoom-reset').addEventListener('click',()=>{scale=1;updateScale();positionCard()});
 
+/* 预取花数，进入送花页时可立即显示 */
+(function prefetchFlowers(){
+  try{
+    fetch('https://abacus.jasoncameron.dev/get/gyirong-2026/flowers',{cache:'no-store'})
+      .then(r=>r.ok?r.json():null)
+      .then(d=>{ if(d&&typeof d.value==='number') sessionStorage.setItem('flowerCount',String(d.value)); })
+      .catch(()=>{});
+  }catch(e){}
+})();
+
 fetch('assets/name_wall.json').then(response=>{if(!response.ok)throw new Error('load');return response.json()}).then(data=>{
   people=data;buildWall();document.body.classList.add('ready');
   requestAnimationFrame(animateWall);
