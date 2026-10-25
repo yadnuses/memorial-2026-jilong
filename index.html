@@ -28,6 +28,7 @@ h1 span{display:block}
 .meta{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-top:16px;border-top:1px solid var(--line);font-size:10px;line-height:1.8;letter-spacing:.12em;color:var(--muted)}
 .meta b{display:block;color:var(--ink);font-size:11px;font-weight:500}
 .photo{position:relative;min-height:100svh;background:#343b3a;overflow:hidden}
+.photo picture{display:block;width:100%;height:100%}
 .photo img{width:100%;height:100%;object-fit:cover;object-position:53% center;filter:saturate(.58) contrast(1.08) brightness(.78)}
 .photo:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(23,23,21,.2),transparent 35%),linear-gradient(0deg,rgba(10,15,15,.65),transparent 42%);pointer-events:none}
 .photo-caption{position:absolute;z-index:2;left:34px;right:34px;bottom:30px;display:flex;justify-content:space-between;gap:20px;color:rgba(255,255,255,.78);font:10px/1.8 "Noto Sans SC",sans-serif;letter-spacing:.1em}
@@ -65,7 +66,10 @@ h1 span{display:block}
     </div>
   </section>
   <figure class="photo">
-    <img src="ch2/assets/ref_photos/nepal_china_border_4k.jpg" alt="群山环绕的吉隆口岸与友谊桥">
+    <picture>
+      <source srcset="ch2/assets/ref_photos/nepal_china_border_4k.webp" type="image/webp">
+      <img src="ch2/assets/ref_photos/nepal_china_border_4k.jpg" alt="群山环绕的吉隆口岸与友谊桥">
+    </picture>
     <span class="place">GYIRONG · NEPAL / CHINA</span>
     <figcaption class="photo-caption"><span>01 / 河谷与口岸</span><span>向下阅读<br>约 12 分钟</span></figcaption>
   </figure>

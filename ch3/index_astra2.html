@@ -297,7 +297,7 @@ function scheduleRender(){
   requestAnimationFrame(()=>{framePending=false;render();});
 }
 function resize(){let d=Math.min(2,window.devicePixelRatio||1);c.width=Math.round(box.clientWidth*d);c.height=Math.round(box.clientHeight*d);c.style.width=box.clientWidth+"px";c.style.height=box.clientHeight+"px";x.setTransform(d,0,0,d,0,0);x.imageSmoothingEnabled=true;x.imageSmoothingQuality="high";render()}
-let n=0;["base","flood","dist","contour","boundary"].forEach(k=>{let i=new Image;i.onload=()=>{imgs[k]=i;if(++n===5){prepareMask();initProfile();resize();addEventListener("resize",resize);addEventListener("scroll",scheduleRender,{passive:true});}};i.src={base:"basemap.jpg",flood:"flood.png",dist:"distance_field.png",contour:"contours.png",boundary:"boundary.png"}[k]});
+let n=0;["base","flood","dist","contour","boundary"].forEach(k=>{let i=new Image;i.onload=()=>{imgs[k]=i;if(++n===5){prepareMask();initProfile();resize();addEventListener("resize",resize);addEventListener("scroll",scheduleRender,{passive:true});}};i.src={base:"basemap.webp",flood:"flood.png",dist:"distance_field.png",contour:"contours.png",boundary:"boundary.png"}[k]});
 })();
 </script>
 <script src="../shared/site.js?v=2" data-ch="3"></script>
