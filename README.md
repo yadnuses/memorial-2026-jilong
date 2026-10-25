@@ -14,6 +14,10 @@
 
 <br>
 
+[![浏览人数](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fabacus.jasoncameron.dev%2Fget%2Fgyirong-2026%2Fvisits&query=%24.value&label=%E6%B5%8F%E8%A7%88%E4%BA%BA%E6%95%B0&color=c08569&labelColor=1a1d1a&style=flat-square)](https://yadnuses.github.io/memorial-2026-jilong/)
+
+<br>
+
 `5,361 条人物记录` · `30.2 公里推进路径` · `4,898 条获救登记`
 
 <br>
