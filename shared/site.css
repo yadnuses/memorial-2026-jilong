@@ -24,6 +24,8 @@ body:has(#scene){padding-top:0}
 #src-link:hover{color:#fff;border-color:#d76a51}
 #flower-link{position:fixed;right:150px;bottom:18px;z-index:80;font:10px "Noto Sans SC",sans-serif;letter-spacing:.14em;color:#c8a08a;text-decoration:none;border-bottom:1px solid #8a6455;padding:8px 0;transition:color .25s,border-color .25s}
 #flower-link:hover{color:#e8c4ae;border-color:#c08569}
+#lang-switch{border-left:1px solid rgba(23,23,21,.16);font-weight:500}
+#lang-switch:hover{color:#a33b2b}
 #clips-src,#credits,.footer-bar,#coda .src,#toCh2{display:none}
 @media(max-width:900px){
 #chapter-nav{height:52px;padding:0 16px}body{padding-top:52px}#chapter-nav .brand span{display:none}#chapter-nav .brand{gap:0}

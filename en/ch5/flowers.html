@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lay a Flower — Names Beneath the Torrent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--void:#0d0f0e;--paper:#efeade;--dim:#9a958a;--faint:#5f5c55;
+  --warm:#c08569;--warm-soft:#d8a48b;
+  --serif:"Noto Serif SC","Songti SC",serif;--sans:"Noto Sans SC",sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{background:var(--void);color:var(--paper);font-family:var(--serif);
+  -webkit-font-smoothing:antialiased;cursor:default}
+
+#petals{position:fixed;inset:0;width:100%;height:100%;display:block}
+.vignette{position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 66% 62% at 50% 50%,transparent 32%,rgba(0,0,0,.62) 100%)}
+
+/* Top inscription */
+.head{position:fixed;top:7vh;left:0;right:0;text-align:center;pointer-events:none;z-index:3}
+.head .t{font-size:clamp(20px,2vw,26px);letter-spacing:.34em;color:#c8c2b4}
+.head .s{margin-top:16px;font-family:var(--sans);font-size:11px;letter-spacing:.3em;color:var(--faint)}
+
+/* Counter (fallback readable layer under the particle digits; the digits themselves are drawn on canvas) */
+#count{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+  font:700 clamp(72px,11vw,150px)/1 "SFMono-Regular",Menlo,monospace;
+  color:transparent;letter-spacing:.02em;user-select:none;pointer-events:none;
+  white-space:nowrap}
+
+/* Give-flower button */
+.give{position:fixed;left:50%;bottom:11vh;transform:translateX(-50%);z-index:6;
+  display:flex;flex-direction:column;align-items:center;gap:14px}
+.give button{position:relative;display:flex;align-items:center;gap:14px;
+  padding:15px 34px;border:1px solid rgba(192,133,105,.55);border-radius:2px;
+  background:rgba(192,133,105,.10);color:var(--paper);cursor:pointer;
+  font-family:var(--sans);font-size:13px;letter-spacing:.3em;
+  transition:background .25s,border-color .25s,transform .18s,color .25s}
+.give button:hover{background:rgba(192,133,105,.22);border-color:var(--warm);
+  color:#fff;transform:translateY(-2px)}
+.give button:active{transform:translateY(0) scale(.98)}
+.give button:disabled{opacity:.55;cursor:default;transform:none}
+.give button svg{width:17px;height:17px;flex:none;transition:transform .35s}
+.give button:hover svg{transform:rotate(-8deg) scale(1.08)}
+.give .tip{font-family:var(--sans);font-size:10.5px;letter-spacing:.22em;color:var(--faint)}
+
+/* Back link */
+.back{position:fixed;left:clamp(18px,3vw,44px);top:clamp(16px,3vh,30px);z-index:5;
+  font-family:var(--sans);font-size:10px;letter-spacing:.24em;color:var(--faint);
+  text-decoration:none;transition:color .3s}
+.back:hover{color:var(--dim)}
+
+/* Rising notice shown when a flower is laid */
+.praise{position:fixed;left:50%;bottom:24vh;transform:translateX(-50%) translateY(0);
+  z-index:7;pointer-events:none;font-family:var(--sans);font-size:12px;
+  letter-spacing:.26em;color:var(--warm-soft);opacity:0;white-space:nowrap}
+
+@media (max-width:700px){
+  .head{top:5vh}
+  .head .t{font-size:17px;letter-spacing:.24em}
+  .head .s{font-size:10px;margin-top:12px}
+  .give{bottom:9vh}
+  .give button{padding:13px 26px;font-size:12px;letter-spacing:.24em}
+}
+@media (prefers-reduced-motion:reduce){
+  .give button,.give button svg{transition:none}
+}
+</style>
+<link rel="stylesheet" href="../../shared/site.css?v=2">
+<style>
+/* site.js injects a fixed chapter nav; shift this page's fixed composition below it
+   so the original spacing between header, digits and button is preserved.
+   The canvas is moved with transform (not top/height) to avoid scaling the drawing. */
+:root{--nav-h:58px}
+@media (max-width:700px){:root{--nav-h:52px}}
+#petals{transform:translateY(var(--nav-h))}
+#count{transform:translate(-50%,calc(-50% + var(--nav-h)))}
+.back{top:calc(var(--nav-h) + clamp(16px,3vh,30px))}
+.head{top:calc(var(--nav-h) + 7vh)}
+/* site.js adds a "Lay a flower" link on this page, which already is the flower page */
+#flower-link{display:none}
+</style>
+</head>
+<body>
+<canvas id="petals" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<a class="back" href="index.html">← Back to the Memorial Wall</a>
+
+<header class="head">
+  <div class="t">Lay a Flower</div>
+  <div class="s">GYIRONG · 2026</div>
+</header>
+
+<div id="count" aria-live="polite" aria-label="Flowers laid"></div>
+
+<div class="give">
+  <button id="give" type="button" aria-label="Lay a flower">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 21c0-6 0-8 0-9"/>
+      <path d="M12 12c-3.6 0-6-2.2-6-5 2.9-.5 5.2.7 6 3"/>
+      <path d="M12 12c3.6 0 6-2.2 6-5-2.9-.5-5.2.7-6 3"/>
+      <circle cx="12" cy="5.5" r="2.1"/>
+    </svg>
+    Lay a Flower
+  </button>
+  <div class="tip">You can tap the number too</div>
+</div>
+
+<div class="praise" id="praise">Flower laid</div>
+
+<script>
+(function(){
+  "use strict";
+  const API="https://abacus.jasoncameron.dev";
+  const KEY="gyirong-2026/flowers";
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const CACHE="flowerCount";
+
+  const cv=document.getElementById("petals"),ctx=cv.getContext("2d");
+  const countEl=document.getElementById("count");
+  const btn=document.getElementById("give");
+  const praise=document.getElementById("praise");
+
+  let W=0,H=0,dpr=1;
+  let shown=0;
+  let pts=[];
+  let raf=0,running=true;
+
+  /* ---------- Canvas ---------- */
+  function resize(){
+    dpr=Math.min(2,devicePixelRatio||1);
+    W=innerWidth;H=innerHeight;
+    cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+    cv.style.width=W+"px";cv.style.height=H+"px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  /* ---------- Digits → target point set ---------- */
+  function slotsFor(str){
+    const off=document.createElement("canvas");
+    off.width=Math.ceil(W);off.height=Math.ceil(H);
+    const o=off.getContext("2d");
+    const size=Math.min(W*0.74/(str.length*0.60),H*0.44);
+    o.fillStyle="#fff";
+    o.font=`700 ${size.toFixed(0)}px "SFMono-Regular",Menlo,monospace`;
+    o.textAlign="center";o.textBaseline="middle";
+    o.fillText(str,W/2,H*0.455);
+    const data=o.getImageData(0,0,off.width,off.height).data;
+    const gap=Math.max(3,Math.round(size/34));
+    const out=[];
+    for(let y=0;y<off.height;y+=gap)
+      for(let x=0;x<off.width;x+=gap)
+        if(data[(y*off.width+x)*4+3]>128)out.push({x,y});
+    return out;
+  }
+
+  /* ---------- Direct placement: no fly-in, correct position from the first frame ---------- */
+  function place(str){
+    const slots=slotsFor(str);
+    if(!slots.length)return;
+    pts=[];
+    for(let i=0;i<slots.length;i++){
+      pts.push({
+        x:slots[i].x, y:slots[i].y,      /* start point is the end point */
+        tx:slots[i].x, ty:slots[i].y,
+        r:1.5+Math.random()*1.4,
+        a:0.70+Math.random()*0.30,
+        warm:Math.random()<0.20
+      });
+    }
+    drawStatic();
+  }
+
+  /* ---------- Number change: interpolate position, no overshoot ---------- */
+  let anim=null;
+  function morph(str,burst){
+    const slots=slotsFor(str);
+    if(!slots.length)return;
+
+    /* Add or trim particles */
+    while(pts.length<slots.length){
+      const s=slots[pts.length];
+      pts.push({x:s.x,y:s.y,tx:s.x,ty:s.y,r:1.5+Math.random()*1.4,
+                a:0.7+Math.random()*0.3,warm:Math.random()<0.2});
+    }
+    if(pts.length>slots.length) pts.length=slots.length;
+
+    const bx=W*0.5, by=H*0.86;
+    const from=[];
+    for(let i=0;i<pts.length;i++){
+      const p=pts[i];
+      let sx=p.x, sy=p.y;
+      /* burst: a small portion rises from the button */
+      if(burst && i%4===0){
+        sx=bx+(Math.random()-0.5)*90;
+        sy=by+(Math.random()-0.5)*30;
+      }
+      from.push({x:sx,y:sy});
+      p.tx=slots[i].x; p.ty=slots[i].y;
+      p.a=0.70+Math.random()*0.30;
+    }
+
+    if(reduce){ for(let i=0;i<pts.length;i++){pts[i].x=pts[i].tx;pts[i].y=pts[i].ty;} drawStatic(); return; }
+
+    const t0=performance.now(), dur=620;
+    if(anim) cancelAnimationFrame(anim);
+    (function step(now){
+      const t=Math.min(1,(now-t0)/dur);
+      const e=t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;   /* easeInOutCubic, no overshoot */
+      for(let i=0;i<pts.length;i++){
+        const p=pts[i], f=from[i];
+        p.x=f.x+(p.tx-f.x)*e;
+        p.y=f.y+(p.ty-f.y)*e;
+      }
+      drawStatic();
+      if(t<1) anim=requestAnimationFrame(step);
+      else{ anim=null; for(let i=0;i<pts.length;i++){pts[i].x=pts[i].tx;pts[i].y=pts[i].ty;} drawStatic(); }
+    })(t0);
+  }
+
+  /* ---------- Drawing ---------- */
+  function drawStatic(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<pts.length;i++){
+      const p=pts[i];
+      ctx.globalAlpha=Math.max(0,Math.min(1,p.a));
+      ctx.fillStyle=p.warm?"#d8a48b":"#efeade";
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,6.2832);
+      ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+
+  /* Very slow breathing at rest (alpha only, no movement) */
+  function breathe(){
+    if(!running||anim){raf=0;return}
+    ctx.clearRect(0,0,W,H);
+    const t=performance.now()/3000;
+    for(let i=0;i<pts.length;i++){
+      const p=pts[i];
+      ctx.globalAlpha=Math.max(0,p.a)*(0.86+0.14*Math.sin(t+i*0.55));
+      ctx.fillStyle=p.warm?"#d8a48b":"#efeade";
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.2832);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    raf=requestAnimationFrame(breathe);
+  }
+  function startBreathe(){ if(!raf&&!reduce) raf=requestAnimationFrame(breathe); }
+
+  /* ---------- Switch the number ---------- */
+  function show(next,burst){
+    const v=Math.max(0,Math.round(next));
+    if(v===shown && pts.length) return;
+    shown=v;
+    countEl.textContent=v;
+    morph(String(v),burst);
+  }
+
+  /* ---------- Flower messages ---------- */
+  const WORDS=["Flower arrived","One more flower","Thank you","Recorded"];
+  let pt=0;
+  function flash(){
+    praise.textContent=WORDS[Math.floor(Math.random()*WORDS.length)];
+    praise.style.transition="none";
+    praise.style.opacity="1";
+    praise.style.transform="translateX(-50%) translateY(0)";
+    clearTimeout(pt);
+    requestAnimationFrame(()=>{
+      praise.style.transition="opacity 1.6s ease, transform 1.6s ease";
+      praise.style.opacity="0";
+      praise.style.transform="translateX(-50%) translateY(-40px)";
+    });
+  }
+
+  /* ---------- Lay a flower ---------- */
+  let busy=false;
+  function give(){
+    if(busy)return;
+    busy=true;
+    flash();
+    show(shown+1,true);
+
+    fetch(`${API}/hit/${KEY}`,{cache:"no-store"})
+      .then(r=>r.ok?r.json():null)
+      .then(d=>{
+        if(d&&typeof d.value==="number"&&d.value!==shown) show(d.value,false);
+      })
+      .catch(()=>{})
+      .finally(()=>{ setTimeout(()=>{busy=false;},300); });
+  }
+  btn.addEventListener("click",give);
+  countEl.addEventListener("click",give);
+  countEl.style.pointerEvents="auto";
+  countEl.style.cursor="pointer";
+
+  /* ---------- Boot: show only once data arrives, no fly-in ---------- */
+  function paint(v){
+    shown=Math.max(0,Math.round(v));
+    countEl.textContent=shown;
+    place(String(shown));
+    startBreathe();
+  }
+
+  function boot(){
+    resize();
+
+    /* Use the cached value first (prefetched by the memorial wall), so it appears instantly */
+    const cached=sessionStorage.getItem(CACHE);
+    if(cached!==null && !isNaN(+cached)) paint(+cached);
+
+    /* Then fetch the latest value; transition smoothly if it differs */
+    fetch(`${API}/get/${KEY}`,{cache:"no-store"})
+      .then(r=>r.ok?r.json():null)
+      .then(d=>{
+        if(!d||typeof d.value!=="number")return;
+        sessionStorage.setItem(CACHE,String(d.value));
+        if(cached===null){ paint(d.value); }
+        else if(+cached!==d.value){ show(d.value,false); }
+      })
+      .catch(()=>{ if(cached===null) paint(0); });
+  }
+
+  let rt=0;
+  addEventListener("resize",()=>{
+    clearTimeout(rt);
+    rt=setTimeout(()=>{ resize(); if(pts.length) place(String(shown)); },220);
+  });
+  document.addEventListener("visibilitychange",()=>{
+    if(document.hidden){ running=false; if(raf)cancelAnimationFrame(raf); raf=0; }
+    else if(!raf){ running=true; startBreathe(); }
+  });
+
+  boot();
+})();
+</script>
+<script src="../../shared/site.js?v=2" data-ch="5" data-lang="en"></script>
+</body>
+</html>

@@ -15,6 +15,10 @@ body{background:var(--paper);color:var(--ink);font-family:"Noto Serif SC","Songt
 .topline,.meta,.credit,.enter,.date-en{font-family:"Noto Sans SC",sans-serif}
 .topline{display:flex;justify-content:space-between;gap:20px;padding-bottom:15px;border-bottom:1px solid var(--ink);font-size:10px;letter-spacing:.22em}
 .topline span:last-child{color:var(--red)}
+.tl-right{display:flex;align-items:center;gap:12px}
+.lang-btn{color:var(--ink);text-decoration:none;font-size:9.5px;letter-spacing:.14em;
+  padding:3px 8px;border:1px solid var(--line);transition:color .2s,border-color .2s,background .2s}
+.lang-btn:hover{color:var(--red);border-color:var(--red);background:rgba(163,59,43,.05)}
 .title-block{margin:auto 0;padding:7vh 0 5vh}
 .date-en{display:flex;align-items:center;gap:12px;color:var(--red);font-size:12px;font-weight:700;letter-spacing:.18em}
 .date-en:before{content:"";width:36px;height:2px;background:var(--red)}
@@ -51,7 +55,7 @@ h1 span{display:block}
 <body>
 <main class="cover">
   <section class="copy" aria-labelledby="title">
-    <div class="topline"><span>DATA NEWS</span><span>2026</span></div>
+    <div class="topline"><span>DATA NEWS</span><span class="tl-right">2026<a class="lang-btn" href="en/index.html" hreflang="en" aria-label="Switch to English">EN</a></span></div>
     <div class="title-block">
       <div class="date-en">26 AUGUST · GYIRONG</div>
       <h1 id="title"><span>洪流之下的</span><span>名字</span></h1>

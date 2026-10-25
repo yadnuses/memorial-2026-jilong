@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f2efe9">
+<title>Chapter 02 · How a Mountain Becomes a Torrent — A Data Chronicle of the Gyirong Port Debris Flow</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#f2efe9;
+  --ink:#171715;
+  --muted:#6b675f;
+  --red:#a33b2b;
+  --blue:#356778;
+  --line:rgba(23,23,21,.14);
+  --line-strong:rgba(23,23,21,.28);
+  --map-w:62vw;
+  --serif:"Noto Serif SC","Source Han Serif SC","STSong","SimSun",Georgia,serif;
+  --sans:Inter,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","IBM Plex Mono",Menlo,monospace;
+}
+html{background:var(--paper);scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);line-height:1.85;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(53,103,120,.18);color:var(--ink)}
+
+/* 进度条：细墨线 */
+.progress-bar{position:fixed;z-index:50;top:0;left:0;width:100vw;height:2px;background:rgba(23,23,21,.08)}
+.progress-fill{height:100%;width:0;background:var(--ink)}
+
+/* 地图容器 */
+.map-container{position:fixed;inset:58px 0 0 auto;width:var(--map-w);height:calc(100vh - 58px);overflow:hidden;background:#ddd8cf;z-index:1}
+#mapCanvas{display:block;width:100%;height:100%;filter:saturate(.96) contrast(1.02)}
+.map-container:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;background:linear-gradient(90deg,rgba(242,239,233,.55),transparent 10%)}
+.map-container:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;background:linear-gradient(180deg,transparent 82%,rgba(242,239,233,.22));pointer-events:none}
+
+.map-kicker{position:absolute;left:1.35rem;bottom:1.05rem;color:rgba(23,23,21,.72);z-index:8;font:600 .62rem/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.map-credit{position:absolute;right:1.35rem;bottom:1.05rem;color:rgba(23,23,21,.45);z-index:8;font:.6rem var(--mono);letter-spacing:.04em}
+
+.map-orientation{position:absolute;right:1.45rem;bottom:2.95rem;z-index:8;display:flex;flex-direction:column;align-items:center;color:rgba(23,23,21,.75);font:700 .6rem var(--mono);letter-spacing:.08em}
+.map-orientation i{position:relative;display:block;width:1px;height:24px;margin-top:2px;background:rgba(23,23,21,.55)}
+.map-orientation i:before{content:"";position:absolute;top:-1px;left:-3.5px;border-left:3.5px solid transparent;border-right:3.5px solid transparent;border-bottom:7px solid rgba(23,23,21,.7)}
+
+.map-scale{position:absolute;left:1.35rem;bottom:2.95rem;z-index:8;display:flex;align-items:flex-end;gap:.4rem;color:rgba(23,23,21,.75);font:600 .6rem var(--mono);letter-spacing:.04em}
+.map-scale i{display:block;width:86px;height:6px;border:1px solid rgba(23,23,21,.65);border-top:0;background:linear-gradient(90deg,rgba(23,23,21,.6) 0 50%,transparent 50% 100%)}
+.map-scale span{white-space:nowrap}
+
+.route-hint{position:absolute;left:1.35rem;top:50%;z-index:8;transform:translateY(-50%);padding:.35rem .5rem;border-left:1.5px solid var(--blue);color:rgba(23,23,21,.7);font:600 .6rem/1.45 var(--mono);letter-spacing:.06em;background:rgba(242,239,233,.55);pointer-events:none}
+
+.legend{position:absolute;top:1.25rem;left:1.25rem;z-index:10;width:188px;padding:.95rem 1rem;background:rgba(242,239,233,.92);border:1px solid var(--line-strong)}
+.legend-title{font:700 .68rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:.6rem;padding-bottom:.45rem;border-bottom:1px solid var(--line)}
+.legend-row{display:flex;align-items:center;gap:.5rem;margin:.28rem 0;font-size:.7rem;color:var(--ink);font-family:var(--sans)}
+.legend-swatch{width:24px;height:8px;flex:none;border:1px solid rgba(23,23,21,.08)}
+.legend-note{border-top:1px solid var(--line);margin-top:.65rem;padding-top:.5rem;color:var(--muted);font-size:.6rem;line-height:1.5;font-family:var(--sans)}
+
+.place-label{position:absolute;z-index:7;pointer-events:none;white-space:nowrap;opacity:0;transform:translate(-50%,-100%);margin-top:-10px;color:var(--ink);font-size:.7rem;font-weight:600;font-family:var(--sans);text-shadow:0 0 3px #f2efe9,0 0 8px #f2efe9,0 0 12px #f2efe9;transition:opacity .35s}
+.place-label.visible{opacity:1}
+.place-label .dot{display:inline-block;width:6px;height:6px;background:var(--ink);border:1px solid rgba(242,239,233,.95);border-radius:50%;margin-right:4px;vertical-align:middle}
+.place-label.port{color:var(--red);font-size:.78rem}
+.place-label.port .dot{background:var(--red);width:8px;height:8px;box-shadow:0 0 0 2px rgba(163,59,43,.22)}
+.place-label.bridge{color:var(--blue);font-size:.66rem}
+.place-label.bridge .dot{background:var(--blue);width:5px;height:5px}
+.place-label.below{transform:translate(-50%,0);margin-top:8px}
+
+/* 左侧叙事栏 */
+.narrative{margin-right:var(--map-w);width:calc(100% - var(--map-w));position:relative;z-index:2;padding:0 3.25rem 0 4.25rem}
+.narrative-spacer-top{height:18vh}
+.section{min-height:86vh;display:flex;align-items:center;border-bottom:1px solid var(--line)}
+.section:last-of-type{border-bottom:0}
+.section-inner{max-width:460px;padding:3.75rem 0;position:relative}
+
+.eyebrow{display:flex;align-items:center;gap:.55rem;color:var(--blue);font:700 .66rem var(--mono);letter-spacing:.16em;margin-bottom:1.4rem;text-transform:uppercase}
+.eyebrow:before{content:"";width:22px;height:1px;background:var(--red)}
+
+.section h1{font-size:clamp(2.5rem,4.2vw,4.4rem);line-height:1.12;letter-spacing:-.02em;font-weight:700;margin-bottom:1.5rem;color:var(--ink)}
+.section h2{font-size:1.45rem;line-height:1.35;font-weight:700;margin-bottom:.95rem;color:var(--ink);letter-spacing:.01em}
+.section p{font-size:1.02rem;line-height:2;margin-bottom:.8rem;color:rgba(23,23,21,.88);text-align:justify}
+.section .lead{font-size:1.18rem;line-height:1.9;color:var(--ink)}
+.section .scroll-cue{margin-top:2rem;font:600 .68rem var(--mono);letter-spacing:.14em;color:var(--muted);display:flex;align-items:center;gap:.55rem}
+.section .scroll-cue:after{content:"";display:block;width:1px;height:28px;background:var(--line-strong);animation:cuePulse 2.2s ease-in-out infinite}
+@keyframes cuePulse{0%,100%{opacity:.35;transform:scaleY(.7);transform-origin:top}50%{opacity:1;transform:scaleY(1)}}
+
+.highlight{color:var(--red);font-weight:700;border-bottom:1px solid rgba(163,59,43,.45)}
+
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.75rem}
+.stat{border-top:1px solid var(--ink);padding-top:.55rem}
+.stat strong{display:block;font:700 1.85rem/1.1 var(--sans);letter-spacing:-.02em;color:var(--ink)}
+.stat span{display:block;margin-top:.3rem;font-size:.68rem;color:var(--muted);font-family:var(--sans);letter-spacing:.04em}
+
+.narrative-spacer-bottom{height:28vh}
+
+/* 章首：强编辑式标题 */
+.hero-mark{display:flex;align-items:baseline;gap:.85rem;margin-bottom:1.75rem}
+.hero-mark .ch{font:700 .72rem var(--mono);letter-spacing:.2em;color:var(--red)}
+.hero-mark .rule{flex:1;height:1px;background:var(--line-strong);max-width:96px}
+
+.footer-bar{margin-right:var(--map-w);padding:1.4rem 3.25rem 1.8rem 4.25rem;border-top:1px solid var(--line);font-size:.66rem;color:var(--muted);line-height:1.75;position:relative;z-index:2;font-family:var(--sans)}
+
+/* 图层注记 */
+.map-layer-note{position:absolute;left:1.35rem;bottom:6.4rem;z-index:9;padding:.45rem .6rem;border-left:1.5px solid var(--blue);color:rgba(23,23,21,.78);font:600 .6rem/1.45 var(--mono);letter-spacing:.04em;background:rgba(242,239,233,.5);max-width:186px}
+.map-layer-note b{display:block;color:var(--blue);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.15rem}
+.map-legend-key{display:inline-block;width:20px;height:2px;margin-right:.35rem;vertical-align:middle;background:var(--blue);opacity:.75}
+
+/* 高程剖面 */
+.terrain-profile{position:absolute;right:1.3rem;bottom:1.7rem;z-index:8;width:min(268px,calc(100% - 2.6rem));padding:.4rem .55rem .3rem;color:var(--ink);font:600 .58rem/1.3 var(--mono);background:rgba(242,239,233,.72);border:1px solid var(--line)}
+.terrain-profile-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.15rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.terrain-profile-head strong{color:var(--ink);font-size:.6rem;letter-spacing:.02em;text-transform:none;font-variant-numeric:tabular-nums}
+.terrain-profile svg{display:block;width:100%;height:52px;overflow:visible}
+.terrain-profile .profile-area{fill:rgba(53,103,120,.12)}
+.terrain-profile .profile-line{fill:none;stroke:var(--blue);stroke-width:1.4}
+.terrain-profile .profile-base{stroke:rgba(23,23,21,.18);stroke-width:1}
+.terrain-profile .profile-marker{fill:var(--red);stroke:rgba(242,239,233,.9);stroke-width:1.2}
+.terrain-profile .profile-node{fill:var(--ink);opacity:.55}
+.terrain-profile-foot{display:flex;justify-content:space-between;color:var(--muted);font-size:.5rem;letter-spacing:.02em}
+.terrain-profile-foot span:last-child{text-align:right}
+
+.map-container{width:100vw}
+.map-container:before{background:linear-gradient(90deg,rgba(242,239,233,.94),rgba(242,239,233,.74) 22%,rgba(242,239,233,.14) 46%,transparent 60%)}
+.legend{left:auto;right:1.25rem}
+.route-hint{left:auto;right:1.35rem}
+.narrative{margin-right:0;width:100%;background:transparent}
+.section{border-bottom:0}
+.section-inner{text-shadow:0 0 3px var(--paper),0 0 14px var(--paper)}
+.map-layer-note{left:auto;right:1.35rem}
+.footer-bar{margin-right:0}
+
+@media(max-width:900px){
+  :root{--map-w:100vw}
+  .map-container{top:52px;height:50vh;bottom:auto}
+  .narrative{margin-right:0;width:100%;padding:50vh 1.4rem 0}
+  .narrative-spacer-top{height:10vh}
+  .section{min-height:72vh}
+  .section-inner{padding:2.75rem 0;max-width:640px}
+  .footer-bar{margin-right:0;padding:1.3rem 1.4rem}
+  .legend{top:.75rem;left:.75rem;transform:scale(.84);transform-origin:top left}
+  .map-credit{display:none}
+  .map-scale{left:.8rem;bottom:2.5rem}
+  .map-orientation{right:.85rem;bottom:2.55rem}
+  .route-hint{left:.8rem;font-size:.54rem}
+  .map-layer-note{left:.8rem;bottom:6rem;font-size:.55rem;max-width:160px}
+  .terrain-profile{right:.75rem;bottom:1.55rem;width:220px}
+  .terrain-profile svg{height:44px}
+}
+@media(max-width:500px){
+  .section h1{font-size:2.35rem}
+  .section p{font-size:.96rem}
+  .section .lead{font-size:1.08rem}
+  .place-label{font-size:.6rem}
+  .stat-row{grid-template-columns:1fr}
+}
+</style>
+<link rel="stylesheet" href="../../shared/site.css?v=2">
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="map-container" id="mapContainer">
+<canvas id="mapCanvas" aria-label="Map of terrain and inundation extent of the debris flow in the Gyirong valley"></canvas>
+<div class="legend">
+<div class="legend-title">Estimated debris-flow depth</div>
+<div class="legend-row"><i class="legend-swatch" style="background:#08306b"></i>&gt; 15 m</div>
+<div class="legend-row"><i class="legend-swatch" style="background:#2171b5"></i>8–15 m</div>
+<div class="legend-row"><i class="legend-swatch" style="background:#6baed6"></i>3–8 m</div>
+<div class="legend-row"><i class="legend-swatch" style="background:#c6dbef"></i>1–3 m</div>
+<div class="legend-row"><i class="legend-swatch" style="background:#deebf7"></i>&lt; 1 m</div>
+<div class="legend-row"><i class="legend-swatch" style="background:#6baed6;opacity:.5"></i>· Inundation trace</div>
+<div class="legend-note">Terrain-constrained model estimate, not equivalent to field measurement.<br>Scroll to watch the flow advance down the valley.</div>
+</div>
+<div class="map-orientation" aria-hidden="true"><span>N</span><i></i></div>
+<div class="map-scale" aria-label="Dynamic map scale"><i id="scaleBar"></i><span id="scaleLabel">5 km</span></div>
+<div class="route-hint"><span class="map-legend-key"></span>Model-estimated impact extent</div>
+<div class="map-layer-note"><b>Now showing</b><span id="layerNote">Terrain and valley</span></div>
+<div class="terrain-profile" aria-label="Elevation profile along the debris-flow path"><div class="terrain-profile-head"><span>Path elevation</span><strong id="profileValue">—</strong></div><svg viewBox="0 0 260 64" role="img" aria-label="Elevation change from the collapse source to the downstream impact zone"><path class="profile-area" id="profileArea"></path><path class="profile-base" d="M0 55H260"></path><path class="profile-line" id="profileLine"></path><g id="profileNodes"></g><circle class="profile-marker" id="profileMarker" cx="0" cy="0" r="3.2"></circle></svg><div class="terrain-profile-foot"><span>Collapse source</span><span>Downstream impact zone</span></div></div>
+<div class="map-kicker">Gyirong valley · Nepal–China border</div><div class="map-credit">© Data narrative map · 2026</div>
+<div class="place-label" id="label-langtang"><span class="dot"></span>Langtang Lirung · 7227 m</div>
+<div class="place-label below" id="label-dam"><span class="dot"></span>Glacial barrier lake · Landslide dam</div>
+<div class="place-label port" id="label-ports"><span class="dot"></span>Gyirong Port · Rasuwagadhi</div>
+<div class="place-label bridge below" id="label-bridge"><span class="dot"></span>Friendship Bridge</div>
+<div class="place-label" id="label-timure"><span class="dot"></span>Timure</div>
+<div class="place-label" id="label-shyabru"><span class="dot"></span>Syabrubesi</div>
+<div class="place-label" id="label-river"><span class="dot"></span>Donglin Zangbo</div>
+</div>
+<main class="narrative">
+<div class="narrative-spacer-top"></div>
+
+<section class="section">
+<div class="section-inner">
+<div class="hero-mark"><span class="ch">CHAPTER 02</span><span class="rule"></span></div>
+<div class="eyebrow">Gyirong valley · A data chronicle</div>
+<h1>How a Mountain<br>Becomes a Torrent</h1>
+<p class="lead">On the morning of 26 August 2026, a glacier high in the upper Cuojian River inside Nepal, at roughly 5,140 metres above sea level, gave way in a high-elevation ice avalanche. The ice fell from height and hurtled down a steep gully as a fast debris avalanche, then travelled downstream along the Cuojian, the Guoba Xiaqu and the Donglin Zangbo, gradually turning into a debris flow.</p>
+<p class="scroll-cue">Scroll to follow the path again</p>
+</div>
+</section>
+
+<section class="section">
+<div class="section-inner">
+<div class="eyebrow">01 / Origin</div>
+<h2>The disaster did not come from the river</h2>
+<p>On the north face of Langtang Lirung, at about 5,000 metres, a mass of ice and rock gave way without warning. The debris plunged into the Donglin Zangbo and blocked the channel into a temporary dam.</p>
+</div>
+</section>
+
+<section class="section">
+<div class="section-inner">
+<div class="eyebrow">02 / Breach</div>
+<h2>Collapse in an instant</h2>
+<p>The dam then breached quickly, and water, ice and rock combined into a dense debris flow that poured down the narrow valley.</p>
+<p>By the time it reached the Gyirong valley, the modelled flow stood <span class="highlight">more than 15 metres high</span>.</p>
+</div>
+</section>
+
+<section class="section">
+<div class="section-inner">
+<div class="eyebrow">03 / Crossing the border</div>
+<h2>A torrent knows no border</h2>
+<p>After turning back to wreck the port, it kept moving south, crossed the border and poured into Nepal's villages and roads.</p>
+<div class="stat-row"><div class="stat"><strong>19</strong><span>bridges swept away</span></div></div>
+</div>
+</section>
+
+<div class="narrative-spacer-bottom"></div>
+</main>
+<footer class="footer-bar">Sources: elevation data from SRTM/AW3D (Terrarium encoding) · Inundation extent is a terrain-model estimate, not a field survey</footer>
+<script>
+(()=>{"use strict";
+const B={west:85.25390625,east:85.60546875,south:28.071980301779853,north:28.343064904825482},W=2048,H=1792;
+const P=[[85.44,28.245,"label-river",0],[85.5169,28.2558,"label-langtang",0],[85.5018,28.2292,"label-dam",0],[85.37785,28.27885,"label-ports",0],[85.3802,28.2743,"label-bridge",.28],[85.3665,28.2537,"label-timure",.55],[85.3363,28.1635,"label-shyabru",.55]];
+const V=[{p:0,lon:85.43,lat:28.22,scale:1.08},{p:.12,lon:85.43,lat:28.22,scale:1.08},{p:.25,lon:85.505,lat:28.242,scale:1.8},{p:.42,lon:85.43,lat:28.26,scale:1.5},{p:.6,lon:85.365,lat:28.21,scale:1.3},{p:.78,lon:85.38,lat:28.22,scale:1.2},{p:1,lon:85.42,lat:28.23,scale:1.2}];
+const F=[{p:0,t:0},{p:.08,t:0},{p:.22,t:.2},{p:.4,t:.5},{p:.6,t:.82},{p:.78,t:1},{p:1,t:1}];
+const PROFILE={"total_km":30.241,"elevation_min_m":1484.0,"elevation_max_m":7158.4,"nodes":[{"name":"Collapse source","km":0,"elevation_m":7158.4,"lon":85.5169,"lat":28.2558},{"name":"Landslide dam","km":3.307,"elevation_m":4427.6,"lon":85.5018,"lat":28.2292},{"name":"Gyirong Port","km":16.688,"elevation_m":1824.5,"lon":85.3778,"lat":28.2797},{"name":"Friendship Bridge","km":19.783,"elevation_m":1735.9,"lon":85.3665,"lat":28.2537},{"name":"Downstream impact zone","km":30.241,"elevation_m":1495.2,"lon":85.3363,"lat":28.1635}],"samples":[{"km":0.0,"elevation_m":7158.4,"lon":85.5169,"lat":28.2558},{"km":0.165,"elevation_m":7042.8,"lon":85.51614500000001,"lat":28.25447},{"km":0.331,"elevation_m":6948.2,"lon":85.51539000000001,"lat":28.253140000000002},{"km":0.496,"elevation_m":6817.5,"lon":85.51463500000001,"lat":28.25181},{"km":0.661,"elevation_m":6694.2,"lon":85.51388,"lat":28.25048},{"km":0.827,"elevation_m":6507.4,"lon":85.513125,"lat":28.24915},{"km":0.992,"elevation_m":6321.5,"lon":85.51237,"lat":28.24782},{"km":1.157,"elevation_m":6114.6,"lon":85.511615,"lat":28.24649},{"km":1.323,"elevation_m":5954.8,"lon":85.51086000000001,"lat":28.24516},{"km":1.488,"elevation_m":5753.5,"lon":85.51010500000001,"lat":28.24383},{"km":1.654,"elevation_m":5605.0,"lon":85.50935000000001,"lat":28.2425},{"km":1.819,"elevation_m":5459.1,"lon":85.508595,"lat":28.24117},{"km":1.984,"elevation_m":5330.9,"lon":85.50784,"lat":28.23984},{"km":2.15,"elevation_m":5167.9,"lon":85.507085,"lat":28.238509999999998},{"km":2.315,"elevation_m":4985.5,"lon":85.50633,"lat":28.23718},{"km":2.48,"elevation_m":4890.4,"lon":85.50557500000001,"lat":28.23585},{"km":2.646,"elevation_m":4813.3,"lon":85.50482000000001,"lat":28.23452},{"km":2.811,"elevation_m":4743.0,"lon":85.504065,"lat":28.23319},{"km":2.976,"elevation_m":4620.4,"lon":85.50331,"lat":28.231859999999998},{"km":3.142,"elevation_m":4502.0,"lon":85.502555,"lat":28.230529999999998},{"km":3.307,"elevation_m":4427.6,"lon":85.5018,"lat":28.2292},{"km":3.976,"elevation_m":4643.5,"lon":85.4956,"lat":28.231724999999997},{"km":4.645,"elevation_m":4955.3,"lon":85.4894,"lat":28.23425},{"km":5.314,"elevation_m":5090.4,"lon":85.4832,"lat":28.236774999999998},{"km":5.983,"elevation_m":5507.0,"lon":85.477,"lat":28.2393},{"km":6.652,"elevation_m":6143.9,"lon":85.4708,"lat":28.241825},{"km":7.321,"elevation_m":5781.8,"lon":85.4646,"lat":28.244349999999997},{"km":7.99,"elevation_m":5308.2,"lon":85.4584,"lat":28.246875},{"km":8.659,"elevation_m":5177.8,"lon":85.4522,"lat":28.249399999999998},{"km":9.328,"elevation_m":5024.1,"lon":85.446,"lat":28.251925},{"km":9.997,"elevation_m":4581.1,"lon":85.43979999999999,"lat":28.25445},{"km":10.666,"elevation_m":4288.6,"lon":85.4336,"lat":28.256974999999997},{"km":11.335,"elevation_m":4177.6,"lon":85.42739999999999,"lat":28.2595},{"km":12.004,"elevation_m":3939.2,"lon":85.4212,"lat":28.262024999999998},{"km":12.673,"elevation_m":3657.9,"lon":85.41499999999999,"lat":28.26455},{"km":13.343,"elevation_m":3398.5,"lon":85.4088,"lat":28.267075},{"km":14.012,"elevation_m":3307.9,"lon":85.40259999999999,"lat":28.269599999999997},{"km":14.681,"elevation_m":3170.5,"lon":85.3964,"lat":28.272125},{"km":15.35,"elevation_m":2920.6,"lon":85.3902,"lat":28.274649999999998},{"km":16.019,"elevation_m":2442.6,"lon":85.384,"lat":28.277175},{"km":16.688,"elevation_m":1824.5,"lon":85.3778,"lat":28.2797},{"km":16.842,"elevation_m":1814.6,"lon":85.377235,"lat":28.278399999999998},{"km":16.997,"elevation_m":1801.5,"lon":85.37666999999999,"lat":28.277099999999997},{"km":17.152,"elevation_m":1836.0,"lon":85.376105,"lat":28.275799999999997},{"km":17.307,"elevation_m":1868.4,"lon":85.37554,"lat":28.2745},{"km":17.462,"elevation_m":1917.8,"lon":85.37497499999999,"lat":28.2732},{"km":17.616,"elevation_m":2011.5,"lon":85.37441,"lat":28.2719},{"km":17.771,"elevation_m":1991.0,"lon":85.373845,"lat":28.270599999999998},{"km":17.926,"elevation_m":1998.2,"lon":85.37328,"lat":28.269299999999998},{"km":18.081,"elevation_m":1998.6,"lon":85.372715,"lat":28.267999999999997},{"km":18.235,"elevation_m":1973.9,"lon":85.37215,"lat":28.2667},{"km":18.39,"elevation_m":1887.7,"lon":85.371585,"lat":28.2654},{"km":18.545,"elevation_m":1904.8,"lon":85.37102,"lat":28.2641},{"km":18.7,"elevation_m":1915.8,"lon":85.37045499999999,"lat":28.2628},{"km":18.855,"elevation_m":1854.3,"lon":85.36989,"lat":28.261499999999998},{"km":19.009,"elevation_m":1755.2,"lon":85.369325,"lat":28.260199999999998},{"km":19.164,"elevation_m":1729.0,"lon":85.36876,"lat":28.258899999999997},{"km":19.319,"elevation_m":1766.4,"lon":85.368195,"lat":28.2576},{"km":19.474,"elevation_m":1775.7,"lon":85.36763,"lat":28.2563},{"km":19.629,"elevation_m":1743.2,"lon":85.367065,"lat":28.255},{"km":19.783,"elevation_m":1735.9,"lon":85.3665,"lat":28.2537},{"km":20.306,"elevation_m":1690.1,"lon":85.36499,"lat":28.24919},{"km":20.829,"elevation_m":1808.6,"lon":85.36348,"lat":28.24468},{"km":21.352,"elevation_m":1885.9,"lon":85.36197,"lat":28.24017},{"km":21.875,"elevation_m":1733.8,"lon":85.36046,"lat":28.23566},{"km":22.398,"elevation_m":1724.0,"lon":85.35895,"lat":28.23115},{"km":22.92,"elevation_m":1912.3,"lon":85.35744,"lat":28.22664},{"km":23.443,"elevation_m":1850.1,"lon":85.35591,"lat":28.22213},{"km":23.966,"elevation_m":1674.2,"lon":85.35441,"lat":28.21762},{"km":24.489,"elevation_m":1753.0,"lon":85.35291,"lat":28.21311},{"km":25.012,"elevation_m":1731.4,"lon":85.3514,"lat":28.208599999999997},{"km":25.535,"elevation_m":1721.2,"lon":85.34989,"lat":28.204089999999997},{"km":26.058,"elevation_m":1728.0,"lon":85.34837999999999,"lat":28.199579999999997},{"km":26.581,"elevation_m":1711.9,"lon":85.34687,"lat":28.195069999999998},{"km":27.103,"elevation_m":1661.8,"lon":85.34536,"lat":28.190559999999998},{"km":27.626,"elevation_m":1581.9,"lon":85.34385,"lat":28.186049999999998},{"km":28.149,"elevation_m":1484.0,"lon":85.34234,"lat":28.18154},{"km":28.672,"elevation_m":1573.9,"lon":85.34083,"lat":28.17703},{"km":29.195,"elevation_m":1732.4,"lon":85.33932,"lat":28.17252},{"km":29.718,"elevation_m":1779.9,"lon":85.33780999999999,"lat":28.16801},{"km":30.241,"elevation_m":1495.2,"lon":85.3363,"lat":28.1635}]};
+const c=document.getElementById("mapCanvas"),x=c.getContext("2d"),box=document.getElementById("mapContainer"),pf=document.getElementById("progressFill");
+
+const scaleBar=document.getElementById("scaleBar"),scaleLabel=document.getElementById("scaleLabel"),layerNote=document.getElementById("layerNote"),profileLine=document.getElementById("profileLine"),profileArea=document.getElementById("profileArea"),profileMarker=document.getElementById("profileMarker"),profileValue=document.getElementById("profileValue"),profileNodes=document.getElementById("profileNodes");
+let imgs={},maskCanvas,maskContext,maskData,maskPixels,maskLevels,maskAlpha;
+let maskLevel=-1,framePending=false;
+const geo=(l,a)=>[(l-B.west)/(B.east-B.west)*W,(B.north-a)/(B.north-B.south)*H],ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function key(k,p,fs){if(p<=k[0].p)return k[0];for(let i=0;i<k.length-1;i++)if(p<=k[i+1].p){let a=k[i],b=k[i+1],t=ease((p-a.p)/(b.p-a.p)),o={};fs.forEach(f=>o[f]=a[f]+(b[f]-a[f])*t);return o}return k[k.length-1]}
+function prog(){let m=document.documentElement.scrollHeight-innerHeight;return m?Math.max(0,Math.min(1,scrollY/m)):0}
+function profileY(e){const min=PROFILE.elevation_min_m,max=PROFILE.elevation_max_m;return 52-((e-min)/(max-min))*43}
+function initProfile(){
+  const pts=PROFILE.samples.map((d,i)=>[(i/(PROFILE.samples.length-1))*260,profileY(d.elevation_m)]);
+  const d=pts.map((q,i)=>(i?"L":"M")+q[0].toFixed(2)+" "+q[1].toFixed(2)).join(" ");
+  profileLine.setAttribute("d",d);profileArea.setAttribute("d",d+" L260 55 L0 55 Z");
+  profileNodes.innerHTML=PROFILE.nodes.map(n=>{const x=(n.km/PROFILE.total_km)*260,y=profileY(n.elevation_m);return `<circle class="profile-node" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2"></circle>`}).join("");
+}
+function updateProfile(p){
+  const i=Math.min(PROFILE.samples.length-1,Math.round(p*(PROFILE.samples.length-1))),d=PROFILE.samples[i];
+  const x=(i/(PROFILE.samples.length-1))*260,y=profileY(d.elevation_m);profileMarker.setAttribute("cx",x.toFixed(1));profileMarker.setAttribute("cy",y.toFixed(1));profileValue.textContent=d.elevation_m.toLocaleString()+" m · "+d.km.toFixed(1)+" km";
+}
+// Decode the existing raster layers once; retain their exact colors and thresholds.
+function prepareMask(){
+  maskCanvas=document.createElement("canvas");maskCanvas.width=W;maskCanvas.height=H;
+  maskContext=maskCanvas.getContext("2d");maskContext.drawImage(imgs.flood,0,0);
+  maskData=maskContext.getImageData(0,0,W,H);
+  const distanceCanvas=document.createElement("canvas");distanceCanvas.width=W;distanceCanvas.height=H;
+  const distanceContext=distanceCanvas.getContext("2d");distanceContext.drawImage(imgs.dist,0,0);
+  const distance=distanceContext.getImageData(0,0,W,H).data;
+  const indices=[],levels=[],alpha=[];
+  for(let i=0;i<maskData.data.length;i+=4){
+    if(!maskData.data[i+3])continue;
+    if(distance[i]){indices.push(i+3);levels.push(distance[i]);alpha.push(maskData.data[i+3]);}
+    maskData.data[i+3]=0;
+  }
+  maskPixels=new Uint32Array(indices);maskLevels=new Uint8Array(levels);maskAlpha=new Uint8Array(alpha);
+}
+function mask(t){
+  const level=Math.round(t*120)/120*255;
+  if(maskLevel!==level){
+    for(let i=0;i<maskPixels.length;i++)maskData.data[maskPixels[i]]=maskLevels[i]<=level?maskAlpha[i]:0;
+    maskContext.putImageData(maskData,0,0);maskLevel=level;
+  }
+  return maskCanvas;
+}
+function updateScale(scale){let kmAcross=(B.east-B.west)*111.32*Math.cos(28.2*Math.PI/180),pxPerKm=W/kmAcross*scale,target=96/pxPerKm,choices=[.5,1,2,5,10,20],km=choices[0];for(const v of choices)if(v<=target)km=v;let width=Math.max(44,Math.min(132,km*pxPerKm));scaleBar.style.width=width+"px";scaleLabel.textContent=km+" km"}
+function render(){
+  if(!maskCanvas)return;
+  const p=prog(),v=key(V,p,["lon","lat","scale"]),t=key(F,p,["t"]).t;
+  const cw=box.clientWidth,ch=box.clientHeight,cen=geo(v.lon,v.lat),s=Math.max(cw/W,ch/H)*v.scale,focalX=cw*.64;
+  const tx=Math.min(0,Math.max(cw-W*s,focalX-cen[0]*s)),ty=Math.min(0,Math.max(ch-H*s,ch/2-cen[1]*s));
+  x.clearRect(0,0,cw,ch);x.save();
+  x.translate(tx,ty);x.scale(s,s);
+  x.drawImage(imgs.base,0,0,W,H);
+  x.globalAlpha=.45;x.drawImage(imgs.contour,0,0,W,H);x.globalAlpha=1;
+  if(t>0){x.save();x.shadowColor="rgba(33,83,126,.38)";x.shadowBlur=8/s;x.drawImage(mask(t),0,0,W,H);x.restore();}
+  x.drawImage(imgs.boundary,0,0,W,H);x.restore();
+  P.forEach(a=>{
+    const e=document.getElementById(a[2]),q=geo(a[0],a[1]);
+    const sx=q[0]*s+tx,sy=q[1]*s+ty;
+    e.style.left=sx+"px";e.style.top=sy+"px";
+    e.classList.toggle("visible",p>=a[3]&&sx>0&&sx<cw&&sy>0&&sy<ch);
+  });
+  layerNote.textContent=p<.16?"Terrain and valley":p<.36?"Upstream terrain and model extent":p<.58?"Model-estimated impact extent":p<.82?"The port and the cross-border valley":"Downstream impact zone";
+  pf.style.width=p*100+"%";updateScale(s);updateProfile(p);
+}
+function scheduleRender(){
+  if(framePending)return;framePending=true;
+  requestAnimationFrame(()=>{framePending=false;render();});
+}
+function resize(){let d=Math.min(2,window.devicePixelRatio||1);c.width=Math.round(box.clientWidth*d);c.height=Math.round(box.clientHeight*d);c.style.width=box.clientWidth+"px";c.style.height=box.clientHeight+"px";x.setTransform(d,0,0,d,0,0);x.imageSmoothingEnabled=true;x.imageSmoothingQuality="high";render()}
+let n=0;["base","flood","dist","contour","boundary"].forEach(k=>{let i=new Image;i.onload=()=>{imgs[k]=i;if(++n===5){prepareMask();initProfile();resize();addEventListener("resize",resize);addEventListener("scroll",scheduleRender,{passive:true});}};i.src={base:"../../ch3/basemap.webp",flood:"../../ch3/flood.png",dist:"../../ch3/distance_field.png",contour:"../../ch3/contours.png",boundary:"../../ch3/boundary.png"}[k]});
+})();
+</script>
+<script src="../../shared/site.js?v=2" data-ch="3" data-lang="en"></script>
+</body>
+</html>

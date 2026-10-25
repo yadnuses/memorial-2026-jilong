@@ -69,6 +69,17 @@ body{background:var(--void);color:var(--paper);font-family:var(--serif);
 }
 </style>
 <link rel="stylesheet" href="../shared/site.css?v=2">
+<style>
+/* site.js 注入固定导航栏，把本页的固定定位元素整体下移，保持原有比例 */
+:root{--nav-h:58px}
+@media (max-width:700px){:root{--nav-h:52px}}
+#petals{transform:translateY(var(--nav-h))}
+#count{transform:translate(-50%,calc(-50% + var(--nav-h)))}
+.back{top:calc(var(--nav-h) + clamp(16px,3vh,30px))}
+.head{top:calc(var(--nav-h) + 7vh)}
+/* 本页即送花页，隐藏 site.js 注入的自指入口 */
+#flower-link{display:none}
+</style>
 </head>
 <body>
 <canvas id="petals" aria-hidden="true"></canvas>
@@ -325,5 +336,6 @@ body{background:var(--void);color:var(--paper);font-family:var(--serif);
   boot();
 })();
 </script>
+<script src="../shared/site.js?v=2" data-ch="5"></script>
 </body>
 </html>

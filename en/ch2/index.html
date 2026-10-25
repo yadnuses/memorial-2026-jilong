@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 01 · The Morning Port — 2026 Gyirong Port Debris Flow Data Chronicle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&amp;family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f2efe9;--ink:#171715;--muted:#716e67;--red:#a33b2b;--line:rgba(23,23,21,.18);--header:58px;--mono:"SFMono-Regular",Consolas,monospace;--sans:"Noto Sans SC",sans-serif;--serif:"Noto Serif SC","Songti SC",serif}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--paper);color:var(--ink);font-family:var(--serif);-webkit-font-smoothing:antialiased}
+#layout{display:flex;align-items:flex-start}#steps{width:41%;max-width:540px;min-width:390px;position:relative;z-index:5;background:var(--paper)}
+.step{min-height:112vh;padding:15vh clamp(34px,4vw,64px);display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid var(--line)}
+.step.centered{text-align:center}
+.impact-copy{width:100%}
+.step.centered .impact-copy{position:fixed;z-index:5;top:var(--header);left:0;width:41%;max-width:540px;min-width:390px;height:calc(100vh - var(--header));padding:0 clamp(34px,4vw,64px);display:flex;flex-direction:column;justify-content:center;background:var(--paper)}
+.kicker{font:500 10px/1.5 var(--sans);letter-spacing:.22em;color:var(--red);margin-bottom:18px;text-transform:uppercase}
+h1,h2{font-weight:900;letter-spacing:-.045em}h1{font-size:clamp(48px,5.2vw,78px);line-height:1.08;margin-bottom:26px}h2{font-size:clamp(29px,2.7vw,42px);line-height:1.25;margin-bottom:22px}
+.step p{font-size:15px;line-height:2.05;color:#494740;margin-bottom:1em}.step .lead{font-size:18px;line-height:1.9;color:var(--ink)}
+.step .cap{margin-top:22px;padding-top:13px;border-top:1px solid var(--line);font:10px/1.8 var(--sans);color:var(--muted);letter-spacing:.04em}
+.person{margin:8px 12px 12px 0;padding:10px 0;background:none;border:0;border-bottom:1px solid var(--ink);color:var(--ink);font:500 11px var(--sans);letter-spacing:.08em;cursor:pointer}.person:after{content:"  →";color:var(--red)}.person:hover{color:var(--red);border-color:var(--red)}
+#stage{position:sticky;top:var(--header);height:calc(100vh - var(--header));flex:1;overflow:hidden;background:#202626}
+.scene{position:absolute;inset:0;opacity:0;transition:opacity .7s ease;pointer-events:none}.scene.on{opacity:1;pointer-events:auto}.scene .imgwrap{position:absolute;inset:0;overflow:hidden;will-change:transform;transform-origin:var(--ox,50%) var(--oy,50%)}
+.scene video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.scene img{position:absolute;filter:saturate(.68) contrast(1.05)}
+.scene:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(10,14,14,.58),transparent 42%),linear-gradient(90deg,rgba(10,14,14,.18),transparent 24%)}
+.anno{position:absolute;z-index:6;border:1px solid rgba(255,255,255,.88);pointer-events:auto}.anno:before{content:"";position:absolute;left:-4px;top:-4px;width:7px;height:7px;background:var(--red)}
+.anno .chip{position:absolute;left:-1px;top:-1px;transform:translateY(-100%);background:rgba(23,23,21,.9);color:#fff;font:500 10px/1.4 var(--sans);padding:6px 9px;letter-spacing:.05em;white-space:nowrap}
+.anno.clickable{cursor:pointer}.anno.clickable:hover{border-color:#e58a72;background:rgba(163,59,43,.14)}
+#countdown{position:fixed;top:calc(var(--header) + 28px);right:30px;z-index:30;text-align:right;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+#countdown .time{font:500 clamp(30px,3.4vw,52px)/1 var(--mono);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+#countdown .bar{width:160px;height:2px;background:rgba(255,255,255,.3);margin:12px 0 0 auto}#countdown .bar i{display:block;height:100%;background:#d76a51;width:0}
+#countdown.zero{opacity:.7}#countdown.zero .time{color:#e58a72}
+.scene-no{position:absolute;left:26px;bottom:24px;z-index:8;color:#fff;font:10px var(--sans);letter-spacing:.18em}
+#finalText{position:absolute;left:clamp(24px,4vw,58px);bottom:9vh;z-index:8;color:#fff;opacity:0;transition:opacity .8s}.scene.final.on #finalText{opacity:1}
+#finalText .big{font:900 clamp(45px,6vw,88px)/1 var(--serif);letter-spacing:-.05em}#finalText p{margin-top:14px;font:12px var(--sans);letter-spacing:.16em;color:rgba(255,255,255,.78)}
+#cardWrap{position:fixed;inset:0;z-index:160;display:none;align-items:center;justify-content:center;background:rgba(23,23,21,.68);backdrop-filter:blur(8px);padding:20px}#cardWrap.open{display:flex}
+#card{width:min(590px,94vw);max-height:88vh;overflow:auto;background:var(--paper);border-top:4px solid var(--red);position:relative;color:var(--ink)}
+#card .close{position:absolute;top:10px;right:12px;width:40px;height:40px;font-size:25px;color:var(--muted);cursor:pointer;background:none;border:0}#card .body{padding:38px 42px 30px}#card .who{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}#card .who b{font-size:28px}#card .who span{font:11px var(--sans);color:var(--red);letter-spacing:.08em}
+#card .quote{font-size:17px;line-height:2;margin:22px 0;padding-left:17px;border-left:2px solid var(--red)}#card .story{margin:0 0 22px;font-size:14px;line-height:2.05;color:#4e4b45}#card .story p+p{margin-top:14px}#card .meta{font:12px/1.9 var(--sans);color:var(--muted)}#card .srcline{padding:13px 42px;background:#e8e3da;font:10px/1.8 var(--sans);color:var(--muted)}#card a{color:inherit}
+#credits{display:none}
+@media(max-width:900px){:root{--header:52px}#layout{display:flex;flex-direction:column}#steps{display:contents}#stage{position:relative;top:0;width:100%;height:62svh;flex:none;order:-1}#countdown{top:76px;right:20px}.step{min-height:auto;padding:70px 28px}.step p{font-size:16px}h1{font-size:56px}.anno .chip{font-size:9px;padding:4px 6px}#card .body{padding:34px 26px 24px}#card .srcline{padding:12px 26px}}
+@media(prefers-reduced-motion:reduce){.scene,.scene.on{transition:none}.scene .imgwrap{transform:none!important}}
+</style>
+<link rel="stylesheet" href="../../shared/site.css?v=2">
+</head>
+<body>
+<div id="countdown" aria-live="off"><div class="time" id="clock">05:00</div><div class="bar"><i id="barFill"></i></div></div>
+<div id="layout">
+  <main id="steps">
+    <section class="step" data-scene="0">
+      <div class="kicker">CHAPTER 01 · 05:00</div><h1>The Morning<br>Port</h1>
+      <p class="lead">In the Gyirong Valley, some 1,800 metres above sea level, dawn is only just breaking. People walk across the Friendship Bridge, trucks wait for inspection, shops get ready to open.</p>
+      <p class="cap">Base image: photographed at eye level · Wikimedia Commons, "Nepal China Border"</p>
+    </section>
+    <section class="step" data-scene="1">
+      <div class="kicker">06:10 · Border Gate</div><h2>The convoy waits at the gate</h2>
+      <p>Nepali painted trucks stand before the border gate; travellers on foot shoulder their packs and walk toward the borderline. Rajkumar Karki, a driver with 20 years behind the wheel, has run this route for half his life. His truck carries cashmere goods bound for Gyirong Town.</p>
+      <p>On the morning of 26 August, his truck was in just such a queue.</p>
+      <button class="person" data-card="0">Meet the driver Rajkumar</button>
+      <p class="cap">Base image: historical photograph of the port (2016), showing the setting and daily life; not the scene on the day of the disaster</p>
+    </section>
+    <section class="step" data-scene="2">
+      <div class="kicker">07:00 · The Chinese Side</div><h2>The car park fills with vehicles waiting to cross</h2>
+      <p>Trucks, coaches and tourists' SUVs waiting to cross stretch out along the Gyirong Zangbo. Inside the port building, border inspection officers begin the day's checks. Wu Yanlu, a young officer born after 2000, had cleared the last inbound truck only the night before.</p>
+      <button class="person" data-card="1">Meet the young officer Wu Yanlu</button>
+      <p class="cap">Base image: aerial view of the port car park · indicative of the setting, not the scene on the day of the disaster</p>
+    </section>
+    <section class="step" data-scene="3">
+      <div class="kicker">08:20 · The Nepali Side</div><h2>Across the river, the shops are waking</h2>
+      <p>Beneath the rock face stands the Nepali customs office. Raju Budhathoki, a customs agent at Timure, is still asleep in an upstairs room — in a little over twenty minutes the whole mountain will shake as if in an earthquake. Back on the Chinese side, the shop of Mr Zhang stands only a few dozen metres from the port; two days earlier he had set off for Shigatse to buy stock.</p>
+      <button class="person" data-card="3">Meet the customs agent Raju</button><button class="person" data-card="2">Meet Mr Zhang</button>
+      <p class="cap">Base image: photograph of the Nepali customs office · Wikimedia Commons</p>
+    </section>
+    <section class="step" data-scene="4">
+      <div class="kicker">09:40 · The Valley</div><h2>The valley is still quiet</h2>
+      <p>Mist still hangs in the Gyirong Zangbo valley. The mountain road along the river leads to Kathmandu; it is mountain road almost the whole way, and in poor condition. Six days earlier, Ms Tong, long a trader between China and Nepal, had left the country along this road. Upstream, meltwater and rock debris have already begun to move, and the port cannot hear it.</p>
+      <button class="person" data-card="4">Meet the trader Ms Tong</button>
+      <p class="cap">Base image: early morning in the Gyirong Zangbo valley · Wikimedia Commons, "Rasuwagadhi morning"</p>
+    </section>
+    <section class="step" data-scene="5" style="min-height:145vh">
+      <div class="impact-copy">
+        <div class="kicker">10:00 · Impact</div><h2>Everything changes in an instant</h2>
+        <p class="lead">The debris flow reaches the port. Security-camera footage recorded the moment.</p>
+        <p>Bridges, shops, the convoy and the sweet tea shops are swept into the torrent, together with an ordinary morning.</p>
+        <p class="cap">Footage: port security-camera video · CCTV / China News Service reports</p>
+      </div>
+    </section>
+  </main>
+  <div id="stage" aria-label="Gyirong Port site footage"></div>
+</div>
+<div id="cardWrap" role="dialog" aria-modal="true" aria-labelledby="cardName">
+  <div id="card"><button class="close" id="cardClose" aria-label="Close profile">×</button><div class="body"><div class="who"><b id="cardName"></b><span id="cardRole"></span></div><div class="quote" id="cardQuote"></div><div class="story" id="cardStory"></div><div class="meta" id="cardMeta"></div></div><div class="srcline" id="cardSrc"></div></div>
+</div>
+<script>
+const SCENES=[
+ {img:'../../ch2/assets/ref_photos/nepal_china_border_4k.webp',ox:'50%',oy:'55%',annos:[{r:[.29,.44,.40,.15],t:'Border gate and port building'},{r:[.38,.60,.12,.11],t:'Travellers crossing',person:4},{r:[.44,.78,.30,.18],t:'Friendship Bridge and borderline'}]},
+ {img:'../../ch2/assets/ref_photos/xhs/gate_truck_2016.webp',ox:'42%',oy:'45%',annos:[{r:[.00,.28,.42,.62],t:'Nepali trucks',person:0},{r:[.39,.27,.24,.37],t:'Border gate'},{r:[.40,.58,.10,.13],t:'Travellers on foot',person:4}]},
+ {img:'../../ch2/assets/ref_photos/xhs/china_side_parking.webp',ox:'50%',oy:'55%',annos:[{r:[.01,.02,.50,.30],t:'Joint inspection building'},{r:[.30,.42,.38,.30],t:'Convoy waiting to cross',person:0},{r:[.66,.08,.26,.38],t:'Gyirong Zangbo'}]},
+ {img:'../../ch2/assets/ref_photos/customs_office.webp',ox:'55%',oy:'50%',annos:[{r:[.21,.41,.65,.26],t:'Nepali customs office'},{r:[.68,.15,.09,.24],t:'Nepali flag'}]},
+ {img:'../../ch2/assets/ref_photos/rasuwagadhi_morning.webp',ox:'40%',oy:'45%',annos:[{r:[.07,.38,.14,.42],t:'Gyirong Zangbo valley'},{r:[.28,.50,.60,.32],t:'Switchback road into the valley'}]},
+ {video:'../../ch2/assets/video/gyirongPort.mp4',final:true,annos:[]}
+];
+const PEOPLE=[
+ {name:'Rajkumar Karki',role:'Nepali truck driver · 20 years on the road',quote:'"I have run this route for half my life. On the morning of 26 August I was still in the queue for inspection. When the water rose, no one thought the bridge would be gone."',story:'Rajkumar, 36, reached Kathmandu safely on Thursday with the help of security personnel. He arrived at his home in Ward 2 of Taha Municipality on Friday afternoon and parked his truck at the door. Before he went inside, he said, he came back to life in front of his children and his wife. Karki has driven for 20 years and owns his own container. For the past five years he has carried goods from Rasuwa to destinations across the country.',meta:'2026-08-26, queued to enter in the early morning · truck and cargo swept away, he survived',src:'Source: <a href="https://ekantipur.com/news/2026/08/29/bhotekoshi-flood-those-who-survived-by-chance-23-53.html" target="_blank" rel="noopener">Kantipur (2026-08-29)</a>'},
+ {name:'Wu Yanlu',role:'Gyirong border inspection station · young officer, born after 2000',quote:'"The night before, I cleared the last inbound truck. My mentor joked that I should come in early tomorrow — no need to queue."',story:['In 2025, after graduating from Shanghai International Studies University, Wu Yanlu chose to come to the frontier on the snowy plateau and joined the Tibet Entry-Exit Border Inspection General Station. After the Gyirong debris flow, colleagues kept worrying about the safety of this young officer.','On 30 August, a reporter with the Ministry of Public Security News and Media Centre confirmed with the Tibet Entry-Exit Border Inspection General Station that at the time of the disaster Wu Yanlu was on placement at the Gyirong station headquarters in Gyirong Town, not on the front line at Gyirong Port.'],meta:'Took part in rescue work and keeping order after the disaster',src:'Source: <a href="https://cbgc.scol.com.cn/news/7904249" target="_blank" rel="noopener">Chuanguan News / Ministry of Public Security News and Media</a>'},
+ {name:'Mr Zhang',role:'Shopkeeper near Gyirong Port',quote:'"The debris flow wiped out my shop in an instant."',story:['Mr Zhang has run a shop near Gyirong Port for years; it stands only a few dozen metres from the port.','On 26 August he was not in the shop. He had set off for Shigatse two days early to buy stock, and so escaped the disaster.','But that was not the extent of his losses. After days of rain, his warehouse had already been flooded once. "We had not even finished clearing the damage from the flooding when the debris flow came."'],meta:'2026-08-26, escaped because he was in Shigatse buying stock · shop destroyed by the debris flow, warehouse already flooded earlier',src:'Source: <a href="https://static.cdsb.com/micropub/Articles/202608/7e95bfb40472785fc3f5f17a50a61b4c.html" target="_blank" rel="noopener">Red Star News, "Out buying stock two days early, a shopkeeper near Gyirong Port escapes the debris flow" (2026-08-27)</a>'},
+ {name:'राजु बुढाथोकी (Raju Budhathoki)',role:'Timure customs · customs agent',quote:'"I was still asleep when, around 8:45, the whole mountain began to shake as if in an earthquake and the houses started to tremble. There was no time to think about what was happening; I ran outside to stay alive."',story:['Raju Budhathoki comes from Mantali-13 in Ramechhap District and works as a customs agent at Timure in Rasuwa District, Nepal, clearing trucks that cross the China-Nepal border.','At about 8:45 on the morning of 26 August he was asleep in an upstairs room. The whole mountain suddenly shook as if in an earthquake and the houses began to sway. He rushed outside without stopping to think; when he reached the nearby police post, he found that even the police were fleeing.','Climbing a wire fence as he fled, he cut his hand. Looking back, he saw the houses of Timure collapsing in rows, some swept away in an instant by the Trishuli River. He ran on to the woods about 500 metres above and survived; he is now being treated in Trishuli.'],meta:'2026-08-26, morning at the Timure customs compound · survived by fleeing to the woods above, hand injured',src:'Source: <a href="https://ekantipur.com/news/2026/08/29/bhotekoshi-flood-those-who-survived-by-chance-23-53.html" target="_blank" rel="noopener">Kantipur, "भोटेकोशी बाढी : जो संयोगले बाँचे" (2026-08-29)</a>'},
+ {name:'Ms Tong',role:'China-Nepal trader · left the country on 20 August',quote:'"There is often news here of roads collapsing or vehicles falling into the valley. That road, too, was cut into the mountainside along the river."',story:['Ms Tong has long traded between China and Nepal, and Gyirong Port is her usual route between the two.','On 20 August she left China through Gyirong Port, six days before the disaster. From the port the road usually runs to Kathmandu, almost entirely through mountains and in poor condition — she describes it as cut into the mountainside along the river, where landslides and vehicles going over the edge are often in the news.','When the disaster struck on 26 August she was in Kathmandu. Chinese residents there exchanged news through WeChat groups, and many of them normally travel in and out through Gyirong Port. "Everyone is very sad."'],meta:'2026-08-20, left through Gyirong Port · already in Kathmandu when the disaster struck',src:'Source: <a href="https://news.sina.cn/gn/2026-08-28/detail-inipvmmz4779760.d.html" target="_blank" rel="noopener">Red Star News, "Out buying stock, a shopkeeper near Gyirong Port escapes the debris flow…" (2026-08-28, republished by Sina)</a>'}
+];
+const stage=document.getElementById('stage');
+const mobileLayout=matchMedia('(max-width:900px)');
+function placeStage(){if(mobileLayout.matches)document.getElementById('layout').prepend(stage);else document.getElementById('layout').append(stage)}
+placeStage();
+if(mobileLayout.addEventListener)mobileLayout.addEventListener('change',placeStage);else mobileLayout.addListener(placeStage);
+SCENES.forEach((s,i)=>{
+ const el=document.createElement('div');el.className='scene'+(s.final?' final':'')+(i===0?' on':'');
+ el.innerHTML=s.video?`<div class="imgwrap"><video src="${s.video}" muted loop playsinline preload="auto"></video></div>`:`<div class="imgwrap" style="--ox:${s.ox};--oy:${s.oy}"><img src="${s.img}" alt="Port scene: ${i+1}"></div>`;
+ const wrap=el.querySelector('.imgwrap');
+ s.annos.forEach(a=>{const d=document.createElement('div');d.className='anno'+(a.person!==undefined?' clickable':'');d.innerHTML=`<div class="chip">${a.t}</div>`;if(a.person!==undefined)d.addEventListener('click',()=>openCard(a.person));wrap.appendChild(d)});
+ el.insertAdjacentHTML('beforeend',`<div class="scene-no">0${i+1} / 06 · 2026.08.26</div>`);
+ if(s.final)el.insertAdjacentHTML('beforeend','<div id="finalText"><div class="big">10:00</div><p>Gyirong Port · the debris flow arrives</p></div>');stage.appendChild(el);
+});
+const sceneEls=[...stage.children];
+function layoutAnnos(i){const s=SCENES[i];if(s.video)return;const el=sceneEls[i],img=el.querySelector('img'),wrap=el.querySelector('.imgwrap');if(!img||!img.naturalWidth)return;const cw=wrap.clientWidth,ch=wrap.clientHeight,nw=img.naturalWidth,nh=img.naturalHeight,scale=Math.max(cw/nw,ch/nh),dw=nw*scale,dh=nh*scale,offx=(cw-dw)/2,offy=(ch-dh)/2;Object.assign(img.style,{left:offx+'px',top:offy+'px',width:dw+'px',height:dh+'px'});wrap.querySelectorAll('.anno').forEach((d,k)=>{const r=s.annos[k].r;Object.assign(d.style,{left:offx+r[0]*dw+'px',top:offy+r[1]*dh+'px',width:r[2]*dw+'px',height:r[3]*dh+'px'})})}
+sceneEls.forEach((el,i)=>{const img=el.querySelector('img');if(img){if(img.complete)layoutAnnos(i);else img.addEventListener('load',()=>layoutAnnos(i))}});
+addEventListener('resize',()=>SCENES.forEach((_,i)=>layoutAnnos(i)));
+const steps=[...document.querySelectorAll('.step')],clock=document.getElementById('clock'),barFill=document.getElementById('barFill'),cd=document.getElementById('countdown'),finalVideo=stage.querySelector('video');let active=-1;
+function onScroll(){const vh=innerHeight,mid=vh*.5;let prog=0;steps.forEach((st,i)=>{const r=st.getBoundingClientRect();if(r.top<=mid&&r.bottom>=mid){if(active!==i){active=i;sceneEls.forEach((s,j)=>s.classList.toggle('on',j===i));layoutAnnos(i);if(finalVideo){if(SCENES[i].video){finalVideo.currentTime=0;finalVideo.play().catch(()=>{})}else finalVideo.pause()}}prog=Math.min(1,Math.max(0,(mid-r.top)/r.height))}});if(active>=0&&!SCENES[active].video){const wrap=sceneEls[active].querySelector('.imgwrap');if(wrap&&!matchMedia('(prefers-reduced-motion: reduce)').matches)wrap.style.transform=`scale(${1+prog*.07})`}const total=document.getElementById('layout').offsetHeight-vh,gp=Math.min(1,Math.max(0,scrollY/total)),remain=Math.round(300*(1-gp));clock.textContent=`${String(Math.floor(remain/60)).padStart(2,'0')}:${String(remain%60).padStart(2,'0')}`;barFill.style.width=gp*100+'%';cd.classList.toggle('zero',remain===0);steps[steps.length-1].classList.toggle('centered',remain===0)}
+addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
+const cardWrap=document.getElementById('cardWrap');
+function openCard(i){const p=PEOPLE[i];cardName.textContent=p.name;cardRole.textContent=p.role;cardQuote.textContent=p.quote;const story=document.getElementById('cardStory');const paras=Array.isArray(p.story)?p.story:(p.story?[p.story]:[]);story.replaceChildren(...paras.map(text=>{const el=document.createElement('p');el.textContent=text;return el}));story.hidden=!paras.length;cardMeta.textContent=p.meta;cardSrc.innerHTML=p.src;cardWrap.classList.add('open');document.getElementById('cardClose').focus()}
+function closeCard(){cardWrap.classList.remove('open')}
+document.querySelectorAll('button.person').forEach(b=>b.addEventListener('click',()=>openCard(+b.dataset.card)));document.getElementById('cardClose').addEventListener('click',closeCard);cardWrap.addEventListener('click',e=>{if(e.target===cardWrap)closeCard()});addEventListener('keydown',e=>{if(e.key==='Escape')closeCard()});
+</script>
+<script src="../../shared/site.js?v=2" data-ch="2" data-lang="en"></script>
+</body>
+</html>
