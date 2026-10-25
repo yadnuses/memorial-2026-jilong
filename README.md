@@ -10,7 +10,7 @@
 
 <br>
 
-[![Enter](https://img.shields.io/badge/▶_进 入 作 品-1a1d1a?style=for-the-badge&labelColor=c08569)](https://yadnuses.github.io/memorial-2026-jilong/)
+[![进入作品](https://img.shields.io/badge/▶%20%E8%BF%9B%E5%85%A5%E4%BD%9C%E5%93%81-1a1d1a?style=for-the-badge&labelColor=c08569)](https://yadnuses.github.io/memorial-2026-jilong/)
 
 <br>
 
