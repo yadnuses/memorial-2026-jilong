@@ -38,6 +38,9 @@
   addEventListener('resize',paintProgress);
   paintProgress();
   if(CH===5){
+    const flower=document.createElement('a');
+    flower.id='flower-link';flower.href=BASE+'ch5/flowers.html';flower.textContent='送一朵花吧 →';
+    document.body.appendChild(flower);
     const end=document.createElement('a');
     end.id='src-link';end.href=BASE+'sources.html';end.textContent='数据来源与方法 →';
     document.body.appendChild(end);
