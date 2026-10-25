@@ -1,0 +1,31 @@
+#entry-mask{position:fixed;inset:0;background:#171715;z-index:999;pointer-events:none;animation:entryFade .7s ease forwards}
+@keyframes entryFade{to{opacity:0;visibility:hidden}}
+#reading-progress{position:fixed;z-index:120;left:0;top:0;height:3px;width:0;background:#a33b2b;pointer-events:none}
+#chapter-nav{position:fixed;z-index:100;left:0;right:0;top:0;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,3vw,48px);background:rgba(242,239,233,.94);border-bottom:1px solid rgba(23,23,21,.16);backdrop-filter:blur(12px);font-family:"Noto Sans SC",sans-serif}
+#chapter-nav .brand{display:flex;align-items:center;gap:14px;color:#171715;text-decoration:none;font-size:11px;font-weight:700;letter-spacing:.16em;white-space:nowrap}
+#chapter-nav .brand:before{content:"";width:8px;height:8px;background:#a33b2b}
+#chapter-nav .links{display:flex;align-items:stretch;height:100%}
+#chapter-nav .links a{position:relative;display:flex;align-items:center;gap:7px;padding:0 15px;color:#77736b;text-decoration:none;font-size:10px;letter-spacing:.08em;white-space:nowrap}
+#chapter-nav .links a b{font-size:10px;color:#a33b2b;font-weight:500}
+#chapter-nav .links a:after{content:"";position:absolute;left:15px;right:15px;bottom:0;height:2px;background:transparent}
+#chapter-nav .links a:hover,#chapter-nav .links a.on{color:#171715}
+#chapter-nav .links a.on:after{background:#a33b2b}
+#chapter-nav .source-link{border-left:1px solid rgba(23,23,21,.16)}
+body{padding-top:58px}
+body:has(#scene){padding-top:0}
+#next-chapter{min-height:58vh;display:flex;align-items:center;background:#171715;color:#f2efe9;text-decoration:none;position:relative;z-index:40;font-family:"Noto Serif SC",serif}
+#next-chapter .nc-inner{width:min(1180px,100%);margin:auto;padding:70px clamp(26px,5vw,72px)}
+#next-chapter .k{font:10px "Noto Sans SC",sans-serif;letter-spacing:.28em;color:#a8a39a}
+#next-chapter .t{margin-top:18px;font-size:clamp(32px,5vw,68px);font-weight:600;letter-spacing:-.04em;line-height:1.2}
+#next-chapter .hint{margin-top:28px;display:flex;align-items:center;gap:14px;font:11px "Noto Sans SC",sans-serif;letter-spacing:.14em;color:#c6c1b7}
+#next-chapter .hint:after{content:"→";font-size:24px;color:#d76a51;transition:transform .2s}
+#next-chapter:hover .hint:after{transform:translateX(8px)}
+#src-link{position:fixed;right:22px;bottom:18px;z-index:80;font:10px "Noto Sans SC",sans-serif;letter-spacing:.14em;color:#b9b4aa;text-decoration:none;border-bottom:1px solid #6f6a62;padding:8px 0}
+#src-link:hover{color:#fff;border-color:#d76a51}
+#clips-src,#credits,.footer-bar,#coda .src,#toCh2{display:none}
+@media(max-width:900px){
+#chapter-nav{height:52px;padding:0 16px}body{padding-top:52px}#chapter-nav .brand span{display:none}#chapter-nav .brand{gap:0}
+#chapter-nav .links a{padding:0 10px;font-size:10px}#chapter-nav .links a span{display:none}#chapter-nav .links a:after{left:8px;right:8px}#chapter-nav .links .source-link{display:none}
+#next-chapter{min-height:48vh}#next-chapter .nc-inner{padding:56px 24px}#src-link{right:16px;bottom:12px}
+}
+@media(prefers-reduced-motion:reduce){#entry-mask{display:none}*{scroll-behavior:auto!important}}

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第四章 · 名字 — 吉隆口岸泥石流数据纪事</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f3f0e9;--ink:#343630;--mutedc:#77736b;--accent:#9a503c;--bg:#121713;--lightpaper:#eee8dc;--group:#e6dece;--serif:"Noto Serif SC","Noto Sans Devanagari","Songti SC",serif;--sans:"Noto Sans SC",sans-serif;--mono:"SFMono-Regular",Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}button{font:inherit}
+body{margin:0;font-family:var(--serif);-webkit-font-smoothing:antialiased;transition:background .45s ease,color .45s ease}
+body.mode-wall{overflow:hidden;background:var(--paper);color:var(--ink)}
+body.mode-formation{overflow-x:hidden;overflow-y:auto;background:var(--bg);color:var(--lightpaper)}
+body.mode-wall #chapters,body.mode-wall #group-nav,body.mode-wall #zoom-controls,body.mode-wall #zoom-hint{display:none}
+body.mode-formation #name-wall,body.mode-formation #chapter-tag,body.mode-formation #closing{display:none}
+
+/* ---------- 模式切换 ---------- */
+.mode-switch{position:fixed;z-index:130;right:clamp(18px,3vw,48px);top:72px;display:flex;align-items:center;gap:2px;padding:3px;border:1px solid rgba(127,127,127,.32);border-radius:2px;background:rgba(128,128,128,.06);backdrop-filter:blur(8px);font-family:var(--sans)}
+.mode-switch span{font-size:9px;letter-spacing:.16em;color:#9a958c;padding:0 7px 0 5px}
+.mode-switch button{padding:6px 12px;border:0;border-radius:1px;background:transparent;color:#8d8880;font-size:10.5px;letter-spacing:.14em;cursor:pointer;transition:background .2s,color .2s}
+.mode-switch button:hover{color:var(--ink)}
+body.mode-wall .mode-switch button.on{background:#343630;color:#f3f0e9}
+body.mode-formation .mode-switch button.on{background:var(--lightpaper);color:#171915}
+
+/* ---------- 流动模式 ---------- */
+.name-wall{position:relative;display:grid;grid-template-columns:repeat(6,1fr);width:100vw;height:calc(100vh - 58px);cursor:default}
+.name-wall::after{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;background:linear-gradient(to bottom,var(--paper) 0,rgba(243,240,233,.92) 84px,transparent 168px,transparent 82%,var(--paper))}
+body.mode-wall .name-column{padding-top:0}
+.name-column{min-width:0;overflow:hidden;opacity:0;transform:translateX(var(--shift));filter:blur(5px)}
+.name-column+.name-column{border-left:1px solid rgba(52,54,48,.055)}
+body.ready .name-column{animation:unfold 1.65s cubic-bezier(.22,.75,.2,1) forwards;animation-delay:calc(var(--column)*70ms)}
+.name-track{will-change:transform}.name-sequence{height:calc(var(--rows)*58px)}
+.name-button{display:flex;align-items:center;width:100%;height:58px;padding:0 1.5vw;border:0;background:transparent;color:var(--ink);font-size:clamp(15px,1.35vw,22px);font-weight:400;letter-spacing:.08em;white-space:nowrap;cursor:pointer;opacity:var(--tone);transition:color .2s,opacity .2s,letter-spacing .2s}
+.name-button span{overflow:hidden;text-overflow:ellipsis}
+.name-button:hover,.name-button.selected{color:var(--accent);opacity:1;letter-spacing:.14em}
+.name-button:focus-visible{outline:1px solid var(--accent);outline-offset:-5px;opacity:1}
+#chapter-tag{position:fixed;z-index:4;left:3vw;top:84px;pointer-events:none;color:var(--mutedc);font:10px var(--sans);letter-spacing:.32em;opacity:0;transition:opacity 1.2s ease 1.5s}
+body.ready #chapter-tag{opacity:.8}
+#closing{position:fixed;z-index:4;left:50%;bottom:7vh;width:min(700px,84vw);transform:translate(-50%,14px);text-align:center;pointer-events:none;opacity:0;transition:opacity 1.6s ease,transform 1.6s ease;text-shadow:0 1px 12px var(--paper),0 0 28px var(--paper)}
+#closing.on{opacity:1;transform:translate(-50%,0)}
+#closing:before{content:"";position:absolute;z-index:-1;inset:-35px -60px;background:radial-gradient(ellipse,rgba(243,240,233,.94),rgba(243,240,233,0) 70%)}
+#closing .l1{font-size:clamp(19px,2vw,28px);font-weight:600;line-height:1.75;letter-spacing:.06em}
+#closing .l2{margin-top:12px;color:var(--mutedc);font:11px/1.9 var(--sans);letter-spacing:.14em}
+
+/* ---------- 方阵模式 ---------- */
+.chapter{position:relative;display:grid;grid-template-columns:26% 1fr;gap:4vw;min-height:calc(100vh - 58px);padding:14vh 4vw 15vh;border-bottom:1px solid rgba(238,232,220,.1)}
+.chapter.rescued{padding-bottom:26vh}
+.group-copy{position:sticky;top:15vh;align-self:start;pointer-events:none}
+.group-index{color:var(--group);font:10px var(--mono);letter-spacing:.22em}
+.group-copy h1{margin-top:24px;font-size:clamp(52px,6vw,92px);font-weight:900;line-height:1;letter-spacing:-.07em}
+.group-count{margin-top:24px;color:var(--group);font:400 clamp(44px,5vw,76px)/1 var(--mono);letter-spacing:-.07em}
+.group-count small{margin-left:10px;font:11px var(--sans);letter-spacing:.16em}
+.group-desc{max-width:260px;margin-top:30px;padding-top:18px;border-top:1px solid rgba(238,232,220,.22);color:#9d9f95;font-size:13px;line-height:2}
+.group-en{margin-top:12px;color:rgba(238,232,220,.32);font:9px var(--mono);letter-spacing:.18em}
+.formation-stage{min-width:0}
+.formation{display:grid;gap:5px;align-content:center;min-height:70vh;transform-origin:top left}
+.formation.rescued{align-content:start;min-height:0}
+.name-tag{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;padding:4px 6px;border:1px solid rgba(238,232,220,.25);background:transparent;color:var(--lightpaper);text-align:center;line-height:1.35;white-space:nowrap;cursor:pointer;clip-path:inset(0);opacity:1;transition:transform .2s cubic-bezier(.2,.8,.2,1),background .16s,color .16s,border-color .16s,box-shadow .2s}
+.chapter:not(.visible) .name-tag{clip-path:inset(0 100% 0 0);opacity:0}
+.chapter.visible .name-tag{animation:cut-in .55s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:var(--delay)}
+.name-tag span{overflow:hidden;text-overflow:ellipsis}
+.name-tag:hover,.name-tag.selected{z-index:3;background:var(--group);border-color:var(--group);color:#171915}
+.name-tag:hover{transform:translateY(-6px) scale(1.07);box-shadow:0 14px 28px rgba(0,0,0,.32)}
+.name-tag:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
+.formation.deceased{gap:9px}
+.formation.deceased .name-tag{background:var(--group);border-color:var(--group);color:#171915;white-space:normal;line-height:1.45}
+.formation.deceased .name-tag span,.formation.rescued .name-tag span{overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+.formation.deceased .name-tag:hover,.formation.deceased .name-tag.selected{background:var(--accent);border-color:var(--accent);color:#171915}
+.formation.missing{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start}
+.formation.missing .name-tag{flex:0 0 auto;min-height:30px;padding:5px 10px;border-color:rgba(131,168,187,.52);color:#a8c0cc;white-space:nowrap;line-height:1.3}
+.formation.missing .name-tag span{overflow:visible;text-overflow:clip}
+.formation.rescued{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start}
+.formation.rescued .name-tag{flex:0 0 auto;min-height:30px;padding:5px 9px;border-color:rgba(185,197,177,.25);color:#c2cbbd;white-space:nowrap;line-height:1.3}
+.formation.rescued .name-tag:hover,.formation.rescued .name-tag.selected{transform:translateY(-4px) scale(1.35);background:var(--group);border-color:var(--group);color:#171915;box-shadow:0 12px 30px rgba(0,0,0,.45)}
+body.mode-formation::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-index:12;pointer-events:none;background:linear-gradient(to top,var(--bg) 34%,rgba(18,23,19,.88) 62%,transparent)}
+#group-nav{position:fixed;z-index:20;left:4vw;bottom:5vh;display:flex;gap:8px}
+#group-nav button{width:54px;height:38px;border:1px solid rgba(238,232,220,.25);background:var(--bg);color:#9d9f95;font:10px var(--mono);cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+#group-nav button:hover,#group-nav button.on{background:var(--group);border-color:var(--group);color:#171915}
+#zoom-controls{position:fixed;z-index:20;right:4vw;bottom:7vh;display:none;align-items:center;gap:7px;font-family:var(--mono)}
+body.rescued-active #zoom-controls{display:flex}
+#zoom-controls button{height:30px;min-width:32px;padding:0 9px;border:1px solid rgba(238,232,220,.22);background:var(--bg);color:var(--lightpaper);font:11px var(--mono);cursor:pointer}
+#zoom-controls button:hover{border-color:var(--group)}
+#scale-label{width:52px;text-align:center;color:#9d9f95;font-size:10px}
+#zoom-hint{position:fixed;z-index:8;right:4vw;bottom:4.8vh;display:none;color:rgba(238,232,220,.38);font:9px var(--sans);letter-spacing:.12em}
+body.rescued-active #zoom-hint{display:block}
+
+/* ---------- 共用人物卡 ---------- */
+.person-card{position:fixed;z-index:140;width:370px;max-height:calc(100vh - 100px);overflow:auto;padding:28px;background:#fbf8f0;color:#24231f;border-top:3px solid var(--accent);box-shadow:0 18px 60px rgba(50,43,32,.28);animation:card-in .22s ease}
+.person-card[hidden]{display:none}
+.card-close{position:absolute;right:13px;top:9px;width:30px;height:30px;border:0;background:transparent;color:#77736b;font-size:22px;cursor:pointer}
+.detail-status{color:var(--accent);font:10px var(--sans);letter-spacing:.15em}
+.person-card h2{margin-top:10px;font-size:29px;line-height:1.35}
+.detail-meta{margin-top:8px;color:#77736b;font:11px/1.8 var(--sans)}
+.detail-quote{margin-top:20px;font-size:20px;line-height:1.65;font-weight:600}
+.detail-story{margin-top:18px;color:#5b5348;font-size:12px;line-height:1.9}
+.detail-sources{margin-top:20px;padding-top:14px;border-top:1px solid rgba(36,35,31,.14);color:#77736b;font:10px/1.8 var(--sans);word-break:break-word}
+.detail-sources a{color:inherit}
+.load-error{position:fixed;inset:45% auto auto 50%;transform:translate(-50%,-50%);font-size:14px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+body #src-link{color:#9a958c;border-bottom-color:#a7a196}
+body #src-link:hover{color:var(--accent);border-color:var(--accent)}
+@keyframes unfold{to{opacity:1;transform:translateX(0);filter:blur(0)}}
+@keyframes cut-in{from{clip-path:inset(0 100% 0 0);opacity:0}to{clip-path:inset(0 0 0 0);opacity:1}}
+@keyframes card-in{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.name-column{opacity:1;transform:none;filter:none}body.ready .name-column{animation:none}.chapter.visible .name-tag{animation:none}#closing{transition:none}}
+</style>
+<link rel="stylesheet" href="../shared/site.css?v=2">
+</head>
+<body class="mode-wall">
+<h1 class="sr-only">洪流之下的名字 · 纪念墙</h1>
+<div id="chapter-tag">第四章 · 名字</div>
+<div class="mode-switch" role="group" aria-label="观看模式"><span>观看</span><button type="button" data-mode="wall" class="on" aria-pressed="true">流动</button><button type="button" data-mode="formation" aria-pressed="false">方阵</button></div>
+<main id="name-wall" class="name-wall" aria-label="持续向下滚动的人物姓名墙"></main>
+<main id="chapters" aria-label="遇难、失联与获救人物姓名方阵"></main>
+<nav id="group-nav" aria-label="前往名字方阵"></nav>
+<div id="zoom-controls"><button id="zoom-out" aria-label="缩小方阵">−</button><span id="scale-label">100%</span><button id="zoom-in" aria-label="放大方阵">+</button><button id="zoom-reset">复位</button></div>
+<div id="zoom-hint">滚轮浏览 · 缩放阅读 · 点击名字</div>
+<div id="closing"><div class="l1">当灾难被写成数字，名字让我们重新看见人。</div><div class="l2">愿等待有回音，愿每一个名字都被看见。</div></div>
+<aside id="person-card" class="person-card" hidden aria-live="polite"></aside>
+<script>
+const ROW_HEIGHT=58,COLUMN_COUNT=6;
+const GROUPS=[
+  {key:'遇难',title:'遇难',en:'01 / THE DECEASED',columns:5,row:78,font:16,color:'#e6dece',className:'deceased',desc:'三十一个名字，三十一次不可挽回的告别。让每一个名字，占据它应有的位置。'},
+  {key:'失联',title:'失联',en:'02 / THE MISSING',columns:14,row:40,font:11,color:'#83a8bb',className:'missing',desc:'名字仍在等待一个答案。线框之间，是尚未抵达的消息。'},
+  {key:'获救',title:'获救',en:'03 / THE RESCUED',columns:24,row:'auto',font:10,color:'#b9c5b1',className:'rescued',desc:'四千九百六十二个名字，汇成生存的方阵。每一个名字，都完整保留。'}
+];
+const wall=document.getElementById('name-wall'),chapters=document.getElementById('chapters'),card=document.getElementById('person-card');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const quote=p=>Array.isArray(p.quote)?p.quote.filter(Boolean).join(' / '):(p.quote||'');
+const sourceName=s=>typeof s==='string'?s:(s?.name||'公开来源');
+const sourceURL=s=>typeof s==='string'?s:(s?.url||'');
+let people=[],columns=[],selected=null,lastTime=0,mode='wall',formationsBuilt=false,groupIndex=0,scale=1,rescuedRevealed=true;
+
+/* ---------- 数据 ---------- */
+function seededRandom(seed){return()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}}
+function shuffled(records){
+  const rand=seededRandom(20261024),copy=records.map((person,index)=>({person,index}));
+  for(let i=copy.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}
+  return copy;
+}
+
+/* ---------- 流动模式 ---------- */
+function makeNameButton(entry,sequence){
+  const button=document.createElement('button');
+  button.type='button';button.className='name-button';button.dataset.index=entry.index;
+  button.style.color={失联:'#607c91',遇难:'#a66a55',受影响:'#9b8654'}[entry.person.status]||'';
+  button.style.setProperty('--tone',(.43+((entry.index*37+sequence*11)%45)/100).toFixed(2));
+  button.setAttribute('aria-label','查看'+entry.person.name+'的人物资料');
+  const text=document.createElement('span');text.textContent=entry.person.name||'（未留姓名）';button.appendChild(text);
+  return button;
+}
+function buildWall(){
+  const ordered=shuffled(people);
+  for(let columnIndex=0;columnIndex<COLUMN_COUNT;columnIndex++){
+    const entries=ordered.filter((_,index)=>index%COLUMN_COUNT===columnIndex);
+    const column=document.createElement('section');column.className='name-column';column.setAttribute('aria-hidden','true');
+    column.style.setProperty('--column',columnIndex);column.style.setProperty('--shift',(2.5-columnIndex)*16+'vw');
+    const track=document.createElement('div');track.className='name-track';
+    for(let sequence=0;sequence<2;sequence++){
+      const group=document.createElement('div');group.className='name-sequence';group.style.setProperty('--rows',entries.length);
+      entries.forEach(entry=>group.appendChild(makeNameButton(entry,sequence)));
+      track.appendChild(group);
+    }
+    column.appendChild(track);wall.appendChild(column);
+    columns.push({el:column,track,height:entries.length*ROW_HEIGHT,offset:-entries.length*ROW_HEIGHT+(columnIndex*173)%(entries.length*ROW_HEIGHT),speed:39+(columnIndex%3)*9});
+  }
+}
+function animateWall(time){
+  requestAnimationFrame(animateWall);
+  if(mode!=='wall'){lastTime=time;return}
+  const delta=(time-lastTime)/1000||0;lastTime=time;
+  for(const column of columns){
+    const motion=selected&&selected.closest('.name-column')===column.el?0:1;
+    column.offset+=column.speed*delta*motion;
+    if(column.offset>=0)column.offset-=column.height;
+    column.track.style.transform=`translate3d(0,${column.offset}px,0)`;
+  }
+  positionCard();
+}
+
+/* ---------- 方阵模式 ---------- */
+function buildFormations(){
+  if(formationsBuilt)return;formationsBuilt=true;
+  GROUPS.forEach((group,index)=>{
+    const records=people.filter(p=>p.status===group.key),section=document.createElement('section');
+    section.className='chapter '+group.className;section.id='chapter-'+group.className;section.dataset.group=index;section.style.setProperty('--group',group.color);
+    const flow=group.className==='rescued'||group.className==='missing';
+    const layout=flow?'':`grid-template-columns:repeat(${group.columns},minmax(0,1fr));grid-auto-rows:${group.row}px`;
+    section.innerHTML=`<header class="group-copy"><div class="group-index">0${index+1} / 03 · NAMES IN FORMATION</div><h1>${group.title}</h1><div class="group-count">${records.length.toLocaleString()}<small>个名字</small></div><p class="group-desc">${group.desc}</p><div class="group-en">${group.en}</div></header><div class="formation-stage"><div class="formation ${group.className}" style="${layout}"></div></div>`;
+    const formation=section.querySelector('.formation'),fragment=document.createDocumentFragment();
+    records.forEach((person,i)=>{
+      const button=document.createElement('button');button.type='button';button.className='name-tag';button.dataset.index=people.indexOf(person);
+      button.style.fontSize=(group.key==='遇难'&&person.name.length>35?12:group.font)+'px';button.style.setProperty('--delay',Math.min(i,90)*9+'ms');button.title=person.name||'（未留姓名）';
+      button.setAttribute('aria-label','查看'+person.name+'的人物资料');
+      const text=document.createElement('span');text.textContent=person.name||'（未留姓名）';button.appendChild(text);fragment.appendChild(button);
+    });
+    formation.appendChild(fragment);chapters.appendChild(section);
+  });
+  buildNav();observeChapters();
+}
+function buildNav(){
+  const nav=document.getElementById('group-nav');
+  nav.innerHTML=GROUPS.map((g,i)=>`<button type="button" data-group="${i}" aria-label="前往${g.title}方阵">0${i+1}</button>`).join('');
+  nav.addEventListener('click',event=>{const button=event.target.closest('[data-group]');if(button)document.getElementById('chapter-'+GROUPS[Number(button.dataset.group)].className).scrollIntoView({behavior:'smooth'})});
+}
+function observeChapters(){
+  const reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');reveal.unobserve(entry.target)}}),{rootMargin:'0px 0px -10% 0px',threshold:0});
+  const active=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)activateGroup(Number(entry.target.dataset.group))}),{rootMargin:'-42% 0px -48% 0px',threshold:0});
+  document.querySelectorAll('.chapter').forEach(section=>{reveal.observe(section);active.observe(section)});
+}
+function activateGroup(index){
+  groupIndex=index;scale=1;document.querySelectorAll('.formation').forEach(f=>f.style.zoom=1);updateScale();
+  document.body.style.setProperty('--group',GROUPS[index].color);document.body.classList.toggle('rescued-active',index===2);
+  document.querySelectorAll('#group-nav button').forEach((button,i)=>{button.classList.toggle('on',i===index);button.setAttribute('aria-pressed',i===index)});
+}
+function updateScale(){const list=document.querySelectorAll('.formation');if(list[groupIndex])list[groupIndex].style.zoom=scale;document.getElementById('scale-label').textContent=Math.round(scale*100)+'%'}
+
+/* ---------- 人物卡 ---------- */
+function positionCard(){
+  if(!selected)return;
+  const rect=selected.getBoundingClientRect(),width=card.offsetWidth,height=card.offsetHeight;
+  let left=rect.right+16;if(left+width>innerWidth-20)left=rect.left-width-16;
+  card.style.left=Math.max(20,Math.min(left,innerWidth-width-20))+'px';
+  card.style.top=Math.max(76,Math.min(rect.top-12,innerHeight-height-24))+'px';
+}
+function closeCard(){if(selected)selected.classList.remove('selected');selected=null;card.hidden=true}
+function openCard(button){
+  if(selected)selected.classList.remove('selected');selected=button;button.classList.add('selected');
+  const person=people[Number(button.dataset.index)];
+  const sources=(person.sources||[]).filter(s=>sourceURL(s)).map(s=>`<a href="${esc(sourceURL(s))}" target="_blank" rel="noopener">${esc(sourceName(s))} ↗</a>`).join('<br>');
+  card.innerHTML=`<button class="card-close" aria-label="关闭资料卡">×</button><div class="detail-status">${esc(person.status)}</div><h2>${esc(person.name||'（未留姓名）')}</h2><div class="detail-meta">${esc([person.age?person.age+' 岁':'',person.identity_desc,person.location].filter(Boolean).join(' · '))}</div>${quote(person)?`<blockquote class="detail-quote">${esc(quote(person))}</blockquote>`:''}${person.story?`<p class="detail-story">${esc(person.story)}</p>`:''}${sources?`<div class="detail-sources">来源<br>${sources}</div>`:''}`;
+  card.hidden=false;card.querySelector('.card-close').addEventListener('click',closeCard);positionCard();
+}
+
+/* ---------- 模式切换 ---------- */
+function setMode(next){
+  if(mode===next)return;
+  mode=next;closeCard();
+  document.body.classList.toggle('mode-wall',next==='wall');
+  document.body.classList.toggle('mode-formation',next==='formation');
+  document.querySelectorAll('.mode-switch button').forEach(button=>{const on=button.dataset.mode===next;button.classList.toggle('on',on);button.setAttribute('aria-pressed',on)});
+  if(next==='formation'){
+    buildFormations();
+    if(!rescuedRevealed&&document.getElementById('chapter-rescued'))document.getElementById('chapter-rescued').classList.add('visible');
+    document.body.classList.remove('rescued-active');
+    window.scrollTo({top:0,behavior:'instant'});
+  }else{
+    window.scrollTo({top:0,behavior:'instant'});
+    document.body.classList.remove('rescued-active');
+    lastTime=performance.now();
+  }
+}
+document.querySelector('.mode-switch').addEventListener('click',event=>{const button=event.target.closest('[data-mode]');if(button)setMode(button.dataset.mode)});
+wall.addEventListener('click',event=>{const button=event.target.closest('.name-button');if(button)openCard(button)});
+chapters.addEventListener('click',event=>{const button=event.target.closest('.name-tag');if(button)openCard(button)});
+card.addEventListener('click',event=>event.stopPropagation());
+addEventListener('scroll',positionCard,{passive:true});addEventListener('resize',positionCard);
+addEventListener('keydown',event=>{if(event.key==='Escape')closeCard()});
+document.getElementById('zoom-in').addEventListener('click',()=>{scale=Math.min(4,scale+.25);updateScale();positionCard()});
+document.getElementById('zoom-out').addEventListener('click',()=>{scale=Math.max(.5,scale-.25);updateScale();positionCard()});
+document.getElementById('zoom-reset').addEventListener('click',()=>{scale=1;updateScale();positionCard()});
+
+fetch('assets/name_wall.json').then(response=>{if(!response.ok)throw new Error('load');return response.json()}).then(data=>{
+  people=data;buildWall();document.body.classList.add('ready');
+  requestAnimationFrame(animateWall);
+  setTimeout(()=>document.getElementById('closing').classList.add('on'),reduce?0:2900);
+}).catch(()=>{wall.innerHTML='<p class="load-error">姓名未能载入，请刷新重试。</p>'});
+</script>
+<script src="../shared/site.js?v=2" data-ch="5"></script>
+</body>
+</html>
